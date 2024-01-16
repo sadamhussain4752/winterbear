@@ -1,0 +1,197 @@
+// controllers/Product.js
+const Product = require("../../models/ProductModel/Product");
+// Create a new Product
+
+const LANGID = {
+  1: "IND",
+  2: "JPN",
+  3: "KOR",
+  4: "AUS",
+};
+
+exports.createProduct = async (req, res) => {
+    try {
+      const {
+        name,
+        description,
+        amount,
+        offeramount,
+        images,
+        color,
+        weight,
+        dimensions,
+        sku,
+        availability,
+        isActive,
+        createdBy,
+        category,
+        lang,
+        qty
+      } = req.body;
+  
+      const newProduct = await Product.create({
+        name,
+        description,
+        amount,
+        offeramount,
+        images,
+        color,
+        weight,
+        dimensions,
+        sku,
+        availability,
+        isActive,
+        createdBy,
+        category,
+        lang,
+        qty
+      });
+  
+      res.status(201).json({ success: true, Product: newProduct });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+
+}
+
+// Get all Products
+exports.getAllProducts = async (req, res) => {
+  try {
+    const Products = await Product.find();
+
+    res.status(200).json({ success: true, Products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+
+// Get user-specific Products by language and search criteria
+exports.getUserProducts = async (req, res) => {
+  try {
+    const { lang, search } = req.query;
+    console.log({ lang, search }, LANGID[lang]);
+
+    if (!LANGID[lang]) {
+      return res.status(400).json({ success: false, error: "Invalid language code" });
+    }
+
+    const query = {
+      lang: LANGID[lang],
+      $or: [
+        { name: { $regex: new RegExp(search, 'i') } },  // Case-insensitive search for name
+        { description: { $regex: new RegExp(search, 'i') } },  // Case-insensitive search for description
+      ],
+    };
+
+    const userProducts = await Product.find(query);
+
+    res.status(200).json({ success: true, userProducts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+
+// Get a specific Product by ID
+exports.getProductById = async (req, res) => {
+  try {
+    const ProductId = req.params.id;
+    const Products = await Product.findById(ProductId);
+
+    if (!Products) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Products not found" });
+    }
+
+    res.status(200).json({ success: true, Products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+// Update a specific Product by ID
+exports.updateProductById = async (req, res) => {
+    try {
+      const ProductId = req.params.id;
+      const {
+        name,
+        description,
+        amount,
+        offeramount,
+        images,
+        color,
+        weight,
+        dimensions,
+        sku,
+        availability,
+        isActive,
+        createdBy,
+        category,
+        lang,
+      } = req.body;
+  
+      // Check if the Product exists
+      const existingProduct = await Product.findById(ProductId);
+  
+      if (!existingProduct) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Product not found" });
+      }
+  
+      // Update the Product fields
+      existingProduct.name = name;
+      existingProduct.description = description;
+      existingProduct.amount = amount;
+      existingProduct.offeramount = offeramount;
+      existingProduct.images = images;
+      existingProduct.color = color;
+      existingProduct.weight = weight;
+      existingProduct.dimensions = dimensions;
+      existingProduct.sku = sku;
+      existingProduct.availability = availability;
+      existingProduct.isActive = isActive;
+      existingProduct.createdBy = createdBy;
+      existingProduct.category = category;
+      existingProduct.lang = lang;
+  
+      // Save the updated Product
+      const updatedProduct = await existingProduct.save();
+  
+      res.status(200).json({ success: true, product: updatedProduct });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+  };
+  
+
+// Delete a specific Product by ID
+exports.deleteProductById = async (req, res) => {
+  try {
+    const ProductId = req.params.id;
+
+    // Check if the Product exists
+    const existingProduct = await Product.findById(ProductId);
+
+    if (!existingProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    // Remove the Product from the database
+    await Product.deleteOne({ _id: ProductId });
+
+    res.status(200).json({ success: true, message: "Product deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
