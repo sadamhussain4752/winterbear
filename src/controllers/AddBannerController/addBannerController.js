@@ -113,7 +113,9 @@ exports.getAllBanners = async (req, res) => {
 
     const Brands = await Brand.find({ lang: LANGID[lang] });
 
-    res.status(200).json({ success: true, banners, Categorys, Brands });
+    const Categorys = await Category.find({ lang: LANGID[lang] });
+
+    res.status(200).json({ success: true, banners,Brands ,Categorys });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
