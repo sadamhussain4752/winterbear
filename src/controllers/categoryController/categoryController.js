@@ -1,15 +1,18 @@
 // controllers/categoryController.js
 const Category = require("../../models/Category/Category");
+const {BASEURL} = require("../../utils/Constants")
 
 // Create a new category
 exports.createCategory = async (req, res) => {
   try {
-    const { name, description, imageUrl, isActive, createdBy, lang } = req.body;
+    const { name, description, isActive, createdBy, lang } = req.body;
+    const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
+
 
     const newCategory = await Category.create({
       name,
       description,
-      imageUrl,
+      imageUrl: imagePaths[0],
       isActive,
       createdBy,
       lang,

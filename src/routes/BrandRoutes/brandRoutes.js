@@ -1,10 +1,11 @@
 // routes/categoryRoutes.js
 const express = require('express');
 const router = express.Router();
+const { uploadArray, multerErrorHandler } = require("../../Image/multerSetup")
 const BrandController = require('../../controllers/brandController/BrandController');
 
 // Create a new Brand
-router.post('/addbrand', BrandController.createBrand);
+router.post('/addbrand', uploadArray, multerErrorHandler, BrandController.createBrand);
 
 // Get all categories
 router.get('/allbrand', BrandController.getAllBrands);

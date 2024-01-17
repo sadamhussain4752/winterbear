@@ -1,5 +1,6 @@
 // controllers/Product.js
 const Product = require("../../models/ProductModel/Product");
+const {BASEURL} = require('../../utils/Constants')
 // Create a new Product
 
 const LANGID = {
@@ -10,13 +11,13 @@ const LANGID = {
 };
 
 exports.createProduct = async (req, res) => {
-    try {
+
+  try {
       const {
         name,
         description,
         amount,
         offeramount,
-        images,
         color,
         weight,
         dimensions,
@@ -25,55 +26,64 @@ exports.createProduct = async (req, res) => {
         isActive,
         createdBy,
         category,
+        brand_id,
         lang,
         qty
       } = req.body;
-  
+
+      // Assuming "images" is a file field in the form
+      const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
+
       const newProduct = await Product.create({
-        name,
-        description,
-        amount,
-        offeramount,
-        images,
-        color,
-        weight,
-        dimensions,
-        sku,
-        availability,
-        isActive,
-        createdBy,
-        category,
-        lang,
-        qty
+          name,
+          description,
+          amount,
+          offeramount,
+          images: imagePaths, // Storing images as base64-encoded string, adjust as needed
+          color,
+          weight,
+          dimensions,
+          sku,
+          availability,
+          isActive,
+          createdBy,
+          category,
+          brand_id,
+          lang,
+          qty
       });
-  
-      res.status(201).json({ success: true, Product: newProduct });
-    } catch (error) {
+
+      res.status(201).json({ success: true, product: newProduct });
+  } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: "Server error" });
-    }
-
+  }
 }
 
-// Get all Products
 exports.getAllProducts = async (req, res) => {
-  try {
-    const Products = await Product.find();
+  const { lang } = req.query;
 
-    res.status(200).json({ success: true, Products });
+  // Validate 'lang' parameter
+  if (!lang || !LANGID[lang]) {
+    return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
+  }
+
+  try {
+    const products = await Product.find({ lang: LANGID[lang] });
+
+    return res.status(200).json({ success: true, products });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, error: "Server error" });
+    return res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
 
 
 // Get user-specific Products by language and search criteria
 exports.getUserProducts = async (req, res) => {
   try {
     const { lang, search } = req.query;
-    console.log({ lang, search }, LANGID[lang]);
-
     if (!LANGID[lang]) {
       return res.status(400).json({ success: false, error: "Invalid language code" });
     }
@@ -134,6 +144,8 @@ exports.updateProductById = async (req, res) => {
         createdBy,
         category,
         lang,
+        brand_id,
+        qty
       } = req.body;
   
       // Check if the Product exists
@@ -159,7 +171,9 @@ exports.updateProductById = async (req, res) => {
       existingProduct.isActive = isActive;
       existingProduct.createdBy = createdBy;
       existingProduct.category = category;
+      existingProduct.brand_id = brand_id;
       existingProduct.lang = lang;
+      existingProduct.qty = qty;
   
       // Save the updated Product
       const updatedProduct = await existingProduct.save();

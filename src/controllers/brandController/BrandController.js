@@ -1,15 +1,18 @@
 // controllers/Brand.js
 const Brand = require("../../models/Brand/BrandModel");
+const {BASEURL} = require("../../utils/Constants")
 
 // Create a new brand
 exports.createBrand = async (req, res) => {
   try {
-    const { name, description, imageUrl, isActive, createdBy, lang,category_id } = req.body;
+    const { name, description, isActive, createdBy, lang,category_id } = req.body;
+
+    const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
 
     const newBrand = await Brand.create({
       name,
       description,
-      imageUrl,
+      imageUrl: imagePaths[0],
       isActive,
       createdBy,
       category_id,
@@ -23,7 +26,7 @@ exports.createBrand = async (req, res) => {
   }
 };
 
-// Get all brands
+// Get all Banner
 exports.getAllBrands = async (req, res) => {
   try {
     const brands = await Brand.find();
@@ -35,7 +38,7 @@ exports.getAllBrands = async (req, res) => {
   }
 };
 
-// Get a specific brand by ID
+// Get a specific Banner by ID
 exports.getBrandById = async (req, res) => {
   try {
     const brandId = req.params.id;
