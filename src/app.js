@@ -1,7 +1,7 @@
 // app.js
 const express = require("express");
-const path = require('path')
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
@@ -15,14 +15,10 @@ const addcartRoutes = require("./routes/AddCartRoutes/addCartRoutes");
 const orderRoutes = require("./routes/OrderRoutes/orderRoutes");
 const BannerRoutes = require("./routes/BannerRouters/BannerRoutes");
 
-
 const app = express();
 
 // Use express.static to serve static files (including images)
-app.use(
-  '/image',
-   express.static(path.join(__dirname, './../uploads'))
- );
+app.use(express.static(path.join(__dirname, "./../uploads")));
 
 const port = process.env.PORT || 5000;
 
@@ -46,14 +42,10 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/brand", brandRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/coupon", couponRoutes);
-app.use('/api/address', addressRoutes);
-app.use('/api/addcart', addcartRoutes);
-app.use('/api/order', orderRoutes);
-app.use('/api/header', BannerRoutes);
-
-
-
-
+app.use("/api/address", addressRoutes);
+app.use("/api/addcart", addcartRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/header", BannerRoutes);
 
 // Additional routes or middleware, if any
 
