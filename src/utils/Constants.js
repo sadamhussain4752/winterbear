@@ -6,11 +6,9 @@ const RESPONSE_MESSAGES = {
   };
 
   const BASEURL = {
-    // baseUrl: "http://localhost:5000/image/",
-    baseUrl: "http://ec2-13-53-197-161.eu-north-1.compute.amazonaws.com:5000/",
-    MOBILE_TAKEN: "Mobile number is already taken",
-    USERNAME_TAKEN: "Username is already taken",
-    SERVER_ERROR: "Server error",
+    baseUrl: "http://localhost:5000/image/",
+    // baseUrl: "http://ec2-13-53-197-161.eu-north-1.compute.amazonaws.com:5000/",
+   
   };
 
   

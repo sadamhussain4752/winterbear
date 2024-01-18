@@ -53,10 +53,19 @@ exports.updateBannerItem = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Missing required fields" });
     }
+    const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
+
 
     const existingBannerItem = await BannerCard.findByIdAndUpdate(
       bannerItemId,
-      { name, description, isActive, createdBy, lang },
+      {
+        name,
+        description,
+        isActive,
+        createdBy,
+        imageUrl: imagePaths && imagePaths.length > 0 ? imagePaths[0] : null,
+        lang,
+      },
       { new: true }
     );
 
@@ -115,7 +124,7 @@ exports.getAllBanners = async (req, res) => {
 
     const Categorys = await Category.find({ lang: LANGID[lang] });
 
-    res.status(200).json({ success: true, banners,Brands ,Categorys });
+    res.status(200).json({ success: true, banners, Brands, Categorys });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
@@ -139,18 +148,25 @@ exports.getAllBannerbyproduct = async (req, res) => {
 
     // Fetch products for each brand asynchronously using Promise.all
     const productsPromises = Brands.map(async (brand) => {
-      const products = await Product.find({ lang: LANGID[lang], brand_id: brand._id });
+      const products = await Product.find({
+        lang: LANGID[lang],
+        brand_id: brand._id,
+      });
       return { brand, products };
     });
 
-    const productsData = await Promise.all(productsPromises);
+    const productList = await Promise.all(productsPromises);
 
-    res.status(200).json({ success: true, Products: productsData });
+    // Create a mapping of brands to products
+  
+
+    res.status(200).json({ success: true, productList });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
 
 // Get a specific banner item by ID
 exports.getBannerById = async (req, res) => {

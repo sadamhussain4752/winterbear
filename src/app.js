@@ -2,6 +2,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const cors = require("cors"); // Import cors middleware
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
@@ -16,6 +17,9 @@ const orderRoutes = require("./routes/OrderRoutes/orderRoutes");
 const BannerRoutes = require("./routes/BannerRouters/BannerRoutes");
 
 const app = express();
+// Use cors middleware
+app.use(cors());
+
 
 // Use express.static to serve static files (including images)
 app.use(express.static(path.join(__dirname, "./../uploads")));

@@ -67,7 +67,6 @@ exports.getAllProducts = async (req, res) => {
   if (!lang || !LANGID[lang]) {
     return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
   }
-
   try {
     const products = await Product.find({ lang: LANGID[lang] });
 
