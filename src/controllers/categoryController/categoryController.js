@@ -6,7 +6,7 @@ const {BASEURL} = require("../../utils/Constants")
 exports.createCategory = async (req, res) => {
   try {
     const { name, description, isActive, createdBy, lang } = req.body;
-    const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
+    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
 
 
     const newCategory = await Category.create({

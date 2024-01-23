@@ -30,9 +30,9 @@ exports.createProduct = async (req, res) => {
         lang,
         qty
       } = req.body;
-
+      console.log(req.file,req.files);
       // Assuming "images" is a file field in the form
-      const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
+      const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
 
       const newProduct = await Product.create({
           name,
@@ -67,6 +67,7 @@ exports.getAllProducts = async (req, res) => {
   if (!lang || !LANGID[lang]) {
     return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
   }
+
   try {
     const products = await Product.find({ lang: LANGID[lang] });
 

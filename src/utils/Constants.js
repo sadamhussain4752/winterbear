@@ -7,7 +7,7 @@ const RESPONSE_MESSAGES = {
 
   const BASEURL = {
     // baseUrl: "http://localhost:5000/image/",
-    baseUrl: "http://ec2-13-53-197-161.eu-north-1.compute.amazonaws.com:5000/",
+    baseUrl: "http://ec2-13-48-245-166.eu-north-1.compute.amazonaws.com:5000/",
    
   };
 

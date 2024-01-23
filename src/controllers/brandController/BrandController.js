@@ -6,6 +6,7 @@ const {BASEURL} = require("../../utils/Constants")
 exports.createBrand = async (req, res) => {
   try {
     const { name, description, isActive, createdBy, lang,category_id } = req.body;
+    console.log(req.files,req.file);
 
     const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
 

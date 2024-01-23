@@ -24,7 +24,7 @@ exports.createBannerItem = async (req, res) => {
     }
 
     const imagePaths = req.files
-      ? req.files.map((file) => `${BASEURL.baseUrl}${file.filename}`)
+      ? req.files.map((file) => `${file.filename}`)
       : null;
 
     const newBanner = await BannerCard.create({
@@ -53,7 +53,7 @@ exports.updateBannerItem = async (req, res) => {
         .status(400)
         .json({ success: false, error: "Missing required fields" });
     }
-    const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
+    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
 
 
     const existingBannerItem = await BannerCard.findByIdAndUpdate(
@@ -123,6 +123,7 @@ exports.getAllBanners = async (req, res) => {
     const Brands = await Brand.find({ lang: LANGID[lang] });
 
     const Categorys = await Category.find({ lang: LANGID[lang] });
+    
 
     res.status(200).json({ success: true, banners, Brands, Categorys });
   } catch (error) {
