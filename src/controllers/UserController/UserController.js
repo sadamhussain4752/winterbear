@@ -326,7 +326,26 @@ module.exports = {
       res.status(500).json({ success: false, error: "Server error" });
     }
   },
-
+   userGetById: async (req, res) => {
+    try {
+      const userId = req.params.id;
+  
+      // Check if the user with the given ID exists
+      const userData = await User.findById(userId);
+  
+      if (!userData) {
+        return res.status(404).json({ success: false, error: "User not found" });
+      }
+  
+      res.status(200).json({
+        success: true,
+        User: userData,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+  },
   updateAdmin: async (req, res) => {
     try {
       const adminId = req.params.id;
