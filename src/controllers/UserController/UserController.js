@@ -112,7 +112,7 @@ module.exports = {
         { expiresIn: "1h" }
       );
 
-      res.status(200).json({ success: true, token });
+      res.status(200).json({ success: true, token ,userId: user._id  });
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: "Server error" });
