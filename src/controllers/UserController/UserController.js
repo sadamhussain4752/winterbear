@@ -96,6 +96,12 @@ module.exports = {
           .status(401)
           .json({ success: false, message: "Invalid credentials" });
       }
+        // Check if user exists
+        if (!user?.verified) {
+          return res
+            .status(401)
+            .json({ success: false, message: "Account not Verified" });
+        }
 
       // Check password
       const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -336,6 +342,12 @@ module.exports = {
       if (!userData) {
         return res.status(404).json({ success: false, error: "User not found" });
       }
+        // Check if user exists
+        if (!userData?.verified) {
+          return res
+            .status(401)
+            .json({ success: false, message: "Account not Verified" });
+        }
   
       res.status(200).json({
         success: true,

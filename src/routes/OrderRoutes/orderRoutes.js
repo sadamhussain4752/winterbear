@@ -15,5 +15,6 @@ router.get('/Orderlist', OrderController.getAllOrderList);
 
 
 router.get('/Dashboardlist', OrderController.getAllDashboard);
+router.post('/orders', OrderController.createOrderWithRazorpay);
 
 module.exports = router;
