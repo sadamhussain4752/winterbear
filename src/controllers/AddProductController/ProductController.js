@@ -134,7 +134,6 @@ exports.updateProductById = async (req, res) => {
         description,
         amount,
         offeramount,
-        images,
         color,
         weight,
         dimensions,
@@ -156,13 +155,14 @@ exports.updateProductById = async (req, res) => {
           .status(404)
           .json({ success: false, message: "Product not found" });
       }
-  
+      const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
+
       // Update the Product fields
       existingProduct.name = name;
       existingProduct.description = description;
       existingProduct.amount = amount;
       existingProduct.offeramount = offeramount;
-      existingProduct.images = images;
+      existingProduct.images = imagePaths;
       existingProduct.color = color;
       existingProduct.weight = weight;
       existingProduct.dimensions = dimensions;

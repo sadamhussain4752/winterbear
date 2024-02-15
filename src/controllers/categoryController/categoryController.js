@@ -7,7 +7,7 @@ exports.createCategory = async (req, res) => {
   try {
     const { name, description, isActive, createdBy, lang } = req.body;
     const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
-
+    console.log(imagePaths);
 
     const newCategory = await Category.create({
       name,
@@ -60,7 +60,7 @@ exports.getCategoryById = async (req, res) => {
 exports.updateCategoryById = async (req, res) => {
   try {
     const categoryId = req.params.id;
-    const { name, description, imageUrl, createdBy,lang } = req.body;
+    const { name, description, isActive, createdBy, lang } = req.body;
 
     // Check if the category exists
     const existingCategory = await Category.findById(categoryId);
@@ -71,10 +71,14 @@ exports.updateCategoryById = async (req, res) => {
         .json({ success: false, message: "Category not found" });
     }
 
+    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
+    console.log(imagePaths);
+    
     // Update the category fields
     existingCategory.name = name;
+    // existingCategory.isActive = isActive;
     existingCategory.description = description;
-    existingCategory.imageUrl = imageUrl;
+    existingCategory.imageUrl = imagePaths[0];
     existingCategory.createdBy = createdBy;
     existingCategory.lang = lang;
 

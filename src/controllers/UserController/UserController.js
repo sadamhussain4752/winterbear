@@ -42,7 +42,6 @@ const sendResetEmail = async (userEmail, resetToken) => {
   await transporter.sendMail(mailOptions);
 };
 
-
 // Send reset email
 const sendVerificationEmail = async (email) => {
   const mailOptions = {
@@ -67,11 +66,10 @@ const updateUser = async (userId, updateData) => {
 
 const updateAdmin = async (adminId, updateData) => {
   try {
-    return await Admin.findOneAndUpdate(
-      { admin_id: adminId },
-      updateData,
-      { new: true, runValidators: true }
-    );
+    return await Admin.findOneAndUpdate({ admin_id: adminId }, updateData, {
+      new: true,
+      runValidators: true,
+    });
   } catch (error) {
     console.error(`Error updating admin: ${error.message}`);
     throw error;
@@ -96,12 +94,12 @@ module.exports = {
           .status(401)
           .json({ success: false, message: "Invalid credentials" });
       }
-        // Check if user exists
-        if (!user?.verified) {
-          return res
-            .status(401)
-            .json({ success: false, message: "Account not Verified" });
-        }
+      // Check if user exists
+      if (!user?.verified) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Account not Verified" });
+      }
 
       // Check password
       const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -118,7 +116,7 @@ module.exports = {
         { expiresIn: "1h" }
       );
 
-      res.status(200).json({ success: true, token ,userId: user._id  });
+      res.status(200).json({ success: true, token, userId: user._id });
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: "Server error" });
@@ -147,7 +145,7 @@ module.exports = {
         storetimming,
         lat,
         log,
-        lang
+        lang,
       } = req.body;
 
       // Check if email, mobile, and username are already taken
@@ -184,7 +182,7 @@ module.exports = {
         email,
         password: hashedPassword,
         username: firstname,
-        lang
+        lang,
       });
 
       // Handle Admin creation if UserType is 2
@@ -200,7 +198,7 @@ module.exports = {
       }
 
       // Send email verification (or any other notification email)
-      sendVerificationEmail(newUser.email);
+      // sendVerificationEmail(newUser.email);
 
       // Prepare the response object
       const response = {
@@ -237,22 +235,21 @@ module.exports = {
     try {
       // Extract usertype and lang from query parameters
       const { UserType, lang } = req.query;
-  
+
       // Construct the filter object based on provided parameters
       const filter = {};
       if (UserType) filter.UserType = UserType;
       if (lang) filter.lang = lang;
-  
+
       // Fetch users based on the filter
       const users = await User.find(filter);
-  
+
       res.status(200).json({ success: true, users });
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: "Server error" });
     }
   },
-  
 
   forgotPassword: async (req, res) => {
     const { email } = req.body;
@@ -296,6 +293,27 @@ module.exports = {
       res.status(500).json({ success: false, error: "Server error" });
     }
   },
+  AdminsListDes: async (req, res) => {
+    try {
+      const admins = await Admin.find();
+  
+      var adminsWithData = await Promise.all(
+        admins.map(async (admin) => {
+          const userData = await User.findById(admin.admin_id);
+          admin["admin_id"] = userData;
+          console.log(userData);
+          return admin;
+        })
+      );
+  
+      res.status(200).json({ success: true, admins: adminsWithData });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+  },
+  
+  
 
   deleteAdmin: async (req, res) => {
     try {
@@ -332,23 +350,51 @@ module.exports = {
       res.status(500).json({ success: false, error: "Server error" });
     }
   },
-   userGetById: async (req, res) => {
+
+  deleteUser: async (req, res) => {
+    try {
+      const adminId = req.params.id;
+
+      // Check if the admin with the given ID exists
+      const adminToDelete = await User.findById(adminId);
+
+      if (!adminToDelete) {
+        return res
+          .status(404)
+          .json({ success: false, error: "User not found" });
+      }
+
+      // Delete the admin and associated user
+      await User.deleteOne({ _id: adminId });
+
+      res.status(200).json({
+        success: true,
+        message: "User and associated user deleted successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+  },
+  userGetById: async (req, res) => {
     try {
       const userId = req.params.id;
-  
+
       // Check if the user with the given ID exists
       const userData = await User.findById(userId);
-  
+
       if (!userData) {
-        return res.status(404).json({ success: false, error: "User not found" });
+        return res
+          .status(404)
+          .json({ success: false, error: "User not found" });
       }
-        // Check if user exists
-        if (!userData?.verified) {
-          return res
-            .status(401)
-            .json({ success: false, message: "Account not Verified" });
-        }
-  
+      // Check if user exists
+      if (!userData?.verified) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Account not Verified" });
+      }
+
       res.status(200).json({
         success: true,
         User: userData,
@@ -394,6 +440,50 @@ module.exports = {
         res.status(201).json(response);
       } else {
         const updatedUser = await updateUser(adminId, updateData);
+        res.status(200).json({ success: true, user: updatedUser });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+  },
+
+  updateUsers: async (req, res) => {
+    try {
+      const UserId = req.params.id;
+      const updateData = req.body;
+
+      const userToUpdate = await User.findById(UserId);
+
+      if (!userToUpdate) {
+        return res
+          .status(404)
+          .json({ success: false, error: "User not found" });
+      }
+
+      if (userToUpdate.UserType === "2") {
+        const updatedAdmin = await updateAdmin(UserId, updateData);
+
+        if (!updatedAdmin) {
+          return res
+            .status(404)
+            .json({ success: false, error: "User not found" });
+        }
+
+        const updatedUser = await updateUser(UserId, updateData);
+
+        const response = {
+          success: true,
+          user: updatedUser,
+        };
+
+        if (updatedAdmin) {
+          response.admin = updatedAdmin;
+        }
+
+        res.status(201).json(response);
+      } else {
+        const updatedUser = await updateUser(UserId, updateData);
         res.status(200).json({ success: true, user: updatedUser });
       }
     } catch (error) {

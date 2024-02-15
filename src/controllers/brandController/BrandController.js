@@ -8,7 +8,7 @@ exports.createBrand = async (req, res) => {
     const { name, description, isActive, createdBy, lang,category_id } = req.body;
     console.log(req.files,req.file);
 
-    const imagePaths = req.files ? req.files.map(file => `${BASEURL.baseUrl}${file.filename}`) : null;
+    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
 
     const newBrand = await Brand.create({
       name,
@@ -62,7 +62,10 @@ exports.getBrandById = async (req, res) => {
 exports.updateBrandById = async (req, res) => {
   try {
     const brandId = req.params.id;
-    const { name, description, imageUrl, createdBy, lang } = req.body;
+    const { name, description, createdBy, lang } = req.body;
+
+    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
+
 
     // Check if the brand exists
     const existingBrand = await Brand.findById(brandId);
@@ -76,7 +79,7 @@ exports.updateBrandById = async (req, res) => {
     // Update the brand fields
     existingBrand.name = name;
     existingBrand.description = description;
-    existingBrand.imageUrl = imageUrl;
+    existingBrand.imageUrl = imagePaths[0];;
     existingBrand.createdBy = createdBy;
     existingBrand.lang = lang;
 

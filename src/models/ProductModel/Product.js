@@ -11,13 +11,13 @@ const ProductSchema = new mongoose.Schema({
   dimensions: String,
   sku: String,
   availability: String,
-  qty: { type: Number, required: true },
+  qty: { type: Number },
   isActive: { type: Boolean, default: true },
   createdBy: { type: String, required: true }, // Assuming you have a User model
   category: { type: String, required: true }, // Assuming you have a Category model
   brand_id: { type: String, required: true }, // Assuming you have a Category model
   createdAt: { type: Date, default: Date.now },
-  lang: { type: String, required: true },
+  lang: { type: String },
 });
 
 const Product = mongoose.model('Product', ProductSchema);

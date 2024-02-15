@@ -16,6 +16,15 @@ const products = await Product.updateMany(
       }
     );
 
+    const products = await User.updateMany(
+      {}, // Empty filter to match all documents
+      {
+        $set: {
+          lang:"IND",
+        },
+      }
+    );
+
 
 
 server {

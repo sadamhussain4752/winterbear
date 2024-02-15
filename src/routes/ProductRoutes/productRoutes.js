@@ -20,7 +20,7 @@ router.get("/ProductUserId", ProductController.getUserProducts);
 router.get("/Product/:id", ProductController.getProductById);
 
 // Updated a specific Product by ID
-router.put("/Product/:id", ProductController.updateProductById);
+router.put("/Product/:id",uploadArray, multerErrorHandler, ProductController.updateProductById);
 
 router.delete("/Product/:id", ProductController.deleteProductById);
 

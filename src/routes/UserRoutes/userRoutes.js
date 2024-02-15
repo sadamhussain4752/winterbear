@@ -31,10 +31,19 @@ router.post("/forgot-password", UserController.forgotPassword);
 // Get all admins endpoint
 router.get("/admins", UserController.listAdmins);
 
+router.get("/adminUser", UserController.AdminsListDes);
+
 // DELETE an admin by ID
 router.delete("/admins/:id", UserController.deleteAdmin);
 
+// DELETE an User by Id
+router.delete("/deleteUser/:id", UserController.deleteUser);
+
+
 // Update an admin by ID
 router.put("/admins/:id", UserController.updateAdmin);
+
+// Update an admin by ID
+router.put("/User/:id", UserController.updateUsers);
 
 module.exports = router;
