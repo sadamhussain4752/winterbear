@@ -131,6 +131,23 @@ exports.getAllBanners = async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+exports.getBannerslist = async (req, res) => {
+  try {
+    const { lang } = req.query;
+
+    // Validate 'lang' parameter
+    if (!lang || !LANGID[lang]) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Invalid 'lang' parameter" });
+    }
+    const banners = await BannerCard.find({ lang: LANGID[lang] });
+    res.status(200).json({ success: true, banners });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
 // Get all banner product items
 
 exports.getAllBannerbyproduct = async (req, res) => {

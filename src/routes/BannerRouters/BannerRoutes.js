@@ -10,6 +10,9 @@ router.post('/addbanner', uploadArray, multerErrorHandler, BannerController.crea
 // Get all categories
 router.get('/allbanner', BannerController.getAllBanners);
 
+// Get only banner list
+router.get('/getbannerlist', BannerController.getBannerslist);
+
 //Get all Lang product
 router.get('/allbrandproduct', BannerController.getAllBannerbyproduct);
 
