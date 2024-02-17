@@ -55,8 +55,8 @@ app.use("/api/staff", EmployeeRoutes);
 
 // Additional routes or middleware, if any
 
-app.get("/.well-known/pki-validation/89DE836F62E0C3B1F8170485D46E5673.txt", (req, res) => {
-  const filePath = '/home/ubuntu/winterbear/winterbear/89DE836F62E0C3B1F8170485D46E5673.txt';
+app.get("/.well-known/pki-validation/7A4BF23AF4370A8CB30130005F7212B3.txt", (req, res) => {
+  const filePath = '/home/ubuntu/winterbear/winterbear/7A4BF23AF4370A8CB30130005F7212B3.txt';
   res.sendFile(filePath);
 });
 
