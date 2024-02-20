@@ -16,6 +16,9 @@ const addcartRoutes = require("./routes/AddCartRoutes/addCartRoutes");
 const orderRoutes = require("./routes/OrderRoutes/orderRoutes");
 const BannerRoutes = require("./routes/BannerRouters/BannerRoutes");
 const EmployeeRoutes = require("./routes/AddEmployess/addEmployeesRoutes")
+const FAQRoutes = require("./routes/AddFaqRoutes/faqRoutes")
+
+const files = fs.readFileSync('./62ACF8182B9E5DCCC1E610CE4B2C525F.txt') 
 
 const app = express();
 // Use cors middleware
@@ -52,8 +55,13 @@ app.use("/api/addcart", addcartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/header", BannerRoutes);
 app.use("/api/staff", EmployeeRoutes);
+app.use("/api/faq", FAQRoutes);
 
 // Additional routes or middleware, if any
+
+app.get('/.well-known/pki-validation/62ACF8182B9E5DCCC1E610CE4B2C525F.txt',(req,res)=>{
+  res.sendFile("C:\Users\Hp\Documents\git\winterbear\62ACF8182B9E5DCCC1E610CE4B2C525F.txt")
+})
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

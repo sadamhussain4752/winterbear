@@ -32,6 +32,8 @@ exports.getAllBrands = async (req, res) => {
   try {
     const brands = await Brand.find();
 
+  
+
     res.status(200).json({ success: true, brands });
   } catch (error) {
     console.error(error);

@@ -28,6 +28,8 @@ const isFieldTaken = async (field, value, errorMessage) => {
   return null;
 };
 
+
+
 // Send reset email
 const sendResetEmail = async (userEmail, resetToken) => {
   const resetLink = `http://localhost:5000/reset?token=${resetToken}`;
