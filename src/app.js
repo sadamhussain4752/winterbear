@@ -59,9 +59,10 @@ app.use("/api/faq", FAQRoutes);
 
 // Additional routes or middleware, if any
 
-app.get('/.well-known/pki-validation/62ACF8182B9E5DCCC1E610CE4B2C525F.txt',(req,res)=>{
-  res.sendFile("C:\Users\Hp\Documents\git\winterbear\62ACF8182B9E5DCCC1E610CE4B2C525F.txt")
-})
+app.get("/.well-known/pki-validation/7A4BF23AF4370A8CB30130005F7212B3.txt", (req, res) => {
+  const filePath = '/home/ubuntu/winterbear/winterbear/7A4BF23AF4370A8CB30130005F7212B3.txt';
+  res.sendFile(filePath);
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
