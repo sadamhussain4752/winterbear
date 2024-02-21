@@ -25,7 +25,7 @@ const orderStatuses = [
 // Create a new order with payment
 exports.createOrder = async (req, res) => {
   try {
-    const { userId, addressId, productIds, totalAmount, delivery,razorpay_payment_id } = req.body;
+    const { userId, addressId, productIds, totalAmount, delivery,razorpay_payment_id,paymentStatus } = req.body;
 
     // Create a new order
     const newOrder = await Order.create({
@@ -33,7 +33,7 @@ exports.createOrder = async (req, res) => {
       addressId,
       productIds,
       totalAmount,
-      paymentStatus: "Pending", // You may adjust the initial payment status
+      paymentStatus, // You may adjust the initial payment status
       delivery,
       razorpay_payment_id
     });

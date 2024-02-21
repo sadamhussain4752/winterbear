@@ -67,7 +67,7 @@ exports.getAllProducts = async (req, res) => {
   if (!lang || !LANGID[lang]) {
     return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
   }
-
+ 
   try {
     const products = await Product.find({ lang: LANGID[lang] });
 
@@ -88,8 +88,11 @@ exports.getUserProducts = async (req, res) => {
       return res.status(400).json({ success: false, error: "Invalid language code" });
     }
 
+    
+
     const query = {
       lang: LANGID[lang],
+      isActive: true,  // Include only active products
       $or: [
         { name: { $regex: new RegExp(search, 'i') } },  // Case-insensitive search for name
         { description: { $regex: new RegExp(search, 'i') } },  // Case-insensitive search for description
