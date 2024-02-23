@@ -61,8 +61,15 @@ app.use("/api/faq", FAQRoutes);
 
 app.get("/.well-known/pki-validation/8FFF660B38128FCE37E39BBA08CD6F8C.txt", (req, res) => {
     const filePath = '/home/ubuntu/backend/winterbear/8FFF660B38128FCE37E39BBA08CD6F8C.txt';
+
+    // Set cache control headers to ensure the file is not cached
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
     res.status(200).sendFile(filePath);
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
