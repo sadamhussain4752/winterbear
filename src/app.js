@@ -59,8 +59,8 @@ app.use("/api/faq", FAQRoutes);
 
 // Additional routes or middleware, if any
 
-app.get("/.well-known/pki-validation/7A4BF23AF4370A8CB30130005F7212B3.txt", (req, res) => {
-  const filePath = '/home/ubuntu/winterbear/winterbear/7A4BF23AF4370A8CB30130005F7212B3.txt';
+app.get("/.well-known/pki-validation/8FFF660B38128FCE37E39BBA08CD6F8C.txt", (req, res) => {
+  const filePath = '/home/ubuntu/winterbear/winterbear/8FFF660B38128FCE37E39BBA08CD6F8C.txt';
   res.sendFile(filePath);
 });
 
