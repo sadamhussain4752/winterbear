@@ -60,8 +60,22 @@ app.use("/api/faq", FAQRoutes);
 // Additional routes or middleware, if any
 
 app.get("/.well-known/pki-validation/8FFF660B38128FCE37E39BBA08CD6F8C.txt", (req, res) => {
-  const filePath = '/home/ubuntu/backend/winterbear/8FFF660B38128FCE37E39BBA08CD6F8C.txt';
-  res.sendFile(filePath);
+    const filePath = '/home/ubuntu/backend/winterbear/8FFF660B38128FCE37E39BBA08CD6F8C.txt';
+
+    // Use path.join to ensure correct path resolution across different operating systems
+    const absolutePath = path.join(__dirname, filePath);
+
+    // Send the file asynchronously
+    res.sendFile(absolutePath, (err) => {
+        if (err) {
+            // Handle any errors that occur during file sending
+            console.error(err);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        // If the file is sent successfully, set a 200 status code
+        res.status(200);
+    });
 });
 
 app.listen(port, () => {
