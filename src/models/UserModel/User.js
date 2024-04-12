@@ -10,8 +10,10 @@ const userSchema = new mongoose.Schema({
   mobilenumber: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-  username: { type: String, unique: false },
+  username: { type: String },
   lang: { type: String, unique: false },
+  profile_img: {type: String},
+  loyalty_point : {type: String, default :"0"},
   verified: {
     type: Boolean,
     required: true,

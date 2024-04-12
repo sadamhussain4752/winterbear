@@ -1,5 +1,6 @@
 // controllers/Coupon.js
 const Coupon = require("../../models/Coupon/Coupon");
+const Order = require("../../models/OrderModel/OrderModel")
 
 // Get all Coupons
 exports.getAllCoupons = async (req, res) => {
@@ -42,6 +43,7 @@ exports.createCoupon = async (req, res) => {
       createdBy,
       category_id,
       maxlimit,
+      isShow_display,
       lang,
     } = req.body;
     const newCoupon = await Coupon.create({
@@ -52,9 +54,10 @@ exports.createCoupon = async (req, res) => {
       createdBy,
       maxlimit,
       category_id,
+      isShow_display,
       lang,
     });
-    res.status(201).json({ success: true, coupon: newCoupon });
+    res.status(200).json({ success: true, coupon: newCoupon });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
@@ -74,6 +77,7 @@ exports.updateCouponById = async (req, res) => {
       category_id,
       maxlimit,
       timesUsed,
+      isShow_display,
       lang,
     } = req.body;
 
@@ -94,6 +98,7 @@ exports.updateCouponById = async (req, res) => {
     existingCoupon.createdBy = createdBy;
     existingCoupon.maxlimit = maxlimit;
     existingCoupon.timesUsed = timesUsed;
+    existingCoupon.isShow_display = isShow_display;
     existingCoupon.category_id = category_id;
     existingCoupon.lang = lang;
 
@@ -133,7 +138,6 @@ exports.deleteCouponById = async (req, res) => {
   }
 };
 
-// Apply a Coupon
 exports.applyCoupon = async (req, res) => {
   try {
     const { couponCode, userId } = req.body;
@@ -141,18 +145,18 @@ exports.applyCoupon = async (req, res) => {
     const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
 
     if (!coupon) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid coupon code" });
+      return res.status(400).json({ success: false, message: "Invalid coupon code" });
     }
 
     if (coupon.maxlimit !== undefined && coupon.maxlimit === 0) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Coupon has reached its maximum usage limit",
-        });
+      return res.status(400).json({ success: false, message: "Coupon has reached its maximum usage limit" });
+    }
+
+    // Check if the coupon has already been used by the user in the Order table
+    const orderWithCoupon = await Order.findOne({ applycoupon: couponCode, userId: userId });
+
+    if (orderWithCoupon) {
+      return res.status(400).json({ success: false, message: "Coupon has already been used by this user" });
     }
 
     // Decrease maxlimit and increase timesUsed
@@ -161,10 +165,28 @@ exports.applyCoupon = async (req, res) => {
 
     // Save the updated coupon
     const updatedCoupon = await coupon.save();
+    // Prepare the response body based on coupon type
+    let bodysend = {
+      code: coupon.code,
+      description: coupon.description,
+      discount: coupon.discount,
+      coupon_type: coupon.coupon_type
+    };
 
-    res
-      .status(200)
-      .json({ success: true, message: "Coupon applied successfully" });
+    // Handle different coupon types
+    if (coupon.coupon_type === 'percentage') {
+      // For percentage discount coupons
+      bodysend.coupon_type = coupon.coupon_type;
+    } else if (coupon.coupon_type === 'bogo') {
+      // For buy one get one free (BOGO) coupons
+      bodysend.coupon_type = coupon.coupon_type;
+    }
+    else if (coupon.coupon_type === 'amount') {
+      // For buy one get one free (BOGO) coupons
+      bodysend.coupon_type = coupon.coupon_type;
+    }
+
+    res.status(200).json({ success: true, bodysend, message: "Coupon applied successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });

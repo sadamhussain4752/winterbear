@@ -11,6 +11,8 @@ const CouponSchema = new mongoose.Schema({
   timesUsed: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   lang: { type: String },
+  isShow_display: { type: Boolean, default: true },
+
 });
 
 const Coupon = mongoose.model("Coupon", CouponSchema);

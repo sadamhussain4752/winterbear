@@ -12,13 +12,13 @@ exports.createCategory = async (req, res) => {
     const newCategory = await Category.create({
       name,
       description,
-      imageUrl: imagePaths[0],
+      imageUrl: req.fileUrls[0],
       isActive,
       createdBy,
       lang,
     });
 
-    res.status(201).json({ success: true, category: newCategory });
+    res.status(200).json({ success: true, category: newCategory });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
@@ -78,7 +78,7 @@ exports.updateCategoryById = async (req, res) => {
     existingCategory.name = name;
     // existingCategory.isActive = isActive;
     existingCategory.description = description;
-    existingCategory.imageUrl = imagePaths[0];
+    existingCategory.imageUrl = req.fileUrls[0];
     existingCategory.createdBy = createdBy;
     existingCategory.lang = lang;
 

@@ -1,6 +1,10 @@
 // controllers/Product.js
-const Product = require("../../models/ProductModel/Product");
+const Product = require("../../models/ProductModel/NewModelProduct");
 const {BASEURL} = require('../../utils/Constants')
+const {uploadHandlers} = require("../../Image/uploadHandlers")
+
+const ExcelJS = require('exceljs');
+const fs = require('fs');
 // Create a new Product
 
 const LANGID = {
@@ -39,7 +43,7 @@ exports.createProduct = async (req, res) => {
           description,
           amount,
           offeramount,
-          images: imagePaths, // Storing images as base64-encoded string, adjust as needed
+          images: req.fileUrls[0], // Storing images as base64-encoded string, adjust as needed
           color,
           weight,
           dimensions,
@@ -53,7 +57,7 @@ exports.createProduct = async (req, res) => {
           qty
       });
 
-      res.status(201).json({ success: true, product: newProduct });
+      res.status(200).json({ success: true, product: newProduct });
   } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: "Server error" });
@@ -67,16 +71,77 @@ exports.getAllProducts = async (req, res) => {
   if (!lang || !LANGID[lang]) {
     return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
   }
- 
-  try {
-    const products = await Product.find({ lang: LANGID[lang] });
+  
 
-    return res.status(200).json({ success: true, products });
+  try {
+    const products   = await Product.find();
+    res.status(200).json({ success: true, products });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, error: "Server error" });
+    res.status(500).json({ success: false, error: "Server error" });
   }
+
+  // try {
+  //   const filePath = "/home/root-mac/Documents/GitHub/winterbear-backend/Sheet1.json"; // Path to the JSON file
+
+  //   // Read JSON data from the file
+  //   const rawData = fs.readFileSync(filePath);
+  //   const productsData = JSON.parse(rawData); // Parse JSON data
+
+  //   // Map each object in the JSON array to a new object conforming to the ProductSchema
+  //   const productsToAdd = [];
+
+  //   for (const product of productsData) {
+  //     const amount = parseFloat(product['MRP'].replace('₹', ''));
+  //     if (isNaN(amount)) {
+  //       console.error(`Invalid MRP value for product: ${product['SKU Name']}`);
+  //       continue; // Skip this product
+  //     }
+
+  //     try {
+  //       const fileUrls = await uploadHandlers(product['Product']); // Upload image for the product
+
+  //       const newProduct = {
+  //         name: product['Category'], // Map 'Product' to 'name'
+  //         description: product['SKU Name'],
+  //         amount: amount, // Use the parsed amount
+  //         sku: product['SKU Name'], // Map 'SKU Name' to 'sku'
+  //         category: product['Category'], // Map 'Category' to 'category'
+  //         offeramount: 0, // Assuming default offer amount is 0
+  //         color: "RED", // Example default color
+  //         weight: "500g", // Example default weight
+  //         dimensions: "10 x 10", // Example default dimensions
+  //         availability: "IN STOCK", // Example default availability
+  //         qty: "", // Assuming default quantity is empty
+  //         createdBy: "", // Assuming no user is specified initially
+  //         brand_id: "", // Assuming no brand is specified initially
+  //         createdAt: new Date(), // Assuming current date as creation date
+  //         lang: "INR", // Example language
+  //         images: fileUrls, // Set fileUrls as images array
+  //         shipment: product['Shipment'],
+  //         catalogueShoot: product['Catalouge Shoot'], // Correcting the misspelled key
+  //         socialMedia: product['Social Media'], // Correcting the space in the key
+  //         websiteInfographics: product['Website Infograpics'], // Correcting the misspelled key
+  //       };
+
+  //       productsToAdd.push(newProduct);
+  //     } catch (error) {
+  //       console.error('File upload error:', error);
+  //       return res.status(500).json({ success: false, error: "File upload error" });
+  //     }
+  //   }
+
+  //   // Insert products into the database
+  //   const insertedProducts = await Product.insertMany(productsToAdd);
+
+  //   return res.status(200).json({ success: true, insertedProducts });
+
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(500).json({ success: false, error: "Server error" });
+  // }
 };
+
 
 
 
@@ -165,7 +230,7 @@ exports.updateProductById = async (req, res) => {
       existingProduct.description = description;
       existingProduct.amount = amount;
       existingProduct.offeramount = offeramount;
-      existingProduct.images = imagePaths;
+      existingProduct.images = req.fileUrls[0];
       existingProduct.color = color;
       existingProduct.weight = weight;
       existingProduct.dimensions = dimensions;

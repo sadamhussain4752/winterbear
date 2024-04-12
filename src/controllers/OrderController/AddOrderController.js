@@ -1,9 +1,10 @@
 const Order = require("../../models/OrderModel/OrderModel");
-const Product = require("../../models/ProductModel/Product");
+const Product = require("../../models/ProductModel/NewModelProduct");
 const User = require("../../models/UserModel/User");
 const Address = require("../../models/Address/AddressModel");
 const moment = require("moment");
-const axios = require("axios")
+const axios = require("axios");
+const Rating = require("../../models/AddRating/RatingModel");
 
 const PAYMENTSTATUS = {
   1: "Completed",
@@ -25,7 +26,7 @@ const orderStatuses = [
 // Create a new order with payment
 exports.createOrder = async (req, res) => {
   try {
-    const { userId, addressId, productIds, totalAmount, delivery,razorpay_payment_id,paymentStatus } = req.body;
+    const { userId, addressId, productIds, totalAmount, delivery, razorpay_payment_id, paymentStatus, applycoupon } = req.body;
 
     // Create a new order
     const newOrder = await Order.create({
@@ -35,10 +36,11 @@ exports.createOrder = async (req, res) => {
       totalAmount,
       paymentStatus, // You may adjust the initial payment status
       delivery,
-      razorpay_payment_id
+      razorpay_payment_id,
+      applycoupon
     });
 
-    res.status(201).json({ success: true, order: newOrder });
+    res.status(200).json({ success: true, order: newOrder });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
@@ -87,6 +89,63 @@ exports.getAllOrder = async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+exports.getByOrderID = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    // Find order by order ID
+    const order = await Order.findById(orderId);
+
+    // Check if order exists
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Fetch address details
+    const address = await Address.findById(order.addressId);
+
+    // Fetch user details
+    const user = await User.findById(order.userId);
+
+    // Fetch product details for each order item
+    const productPromises = order.productIds.map(async (productId) => {
+      let product = await Product.findById(productId);
+      // Fetch ratings for the product
+      const ratings = await Rating.find({ productId, userId: order.userId });
+
+      // Check if ratings exist and contain valid values
+      if (ratings.length > 0) {
+        // Merge product and ratings
+        product = { ...product.toObject(), ratings };
+      } else {
+        // Set ratings to null if not found
+        product.ratings = null;
+      }
+
+      return product;
+    });
+
+    // Wait for all promises to resolve
+    const productsWithDetails = await Promise.all(productPromises);
+
+    // Construct the response object with order details and related entities
+    const orderWithDetails = {
+      _id: order._id,
+      address,
+      user,
+      products: productsWithDetails
+    };
+
+    // Return the response
+    res.status(200).json({ success: true, order: orderWithDetails });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+
+
 
 exports.getAllOrderList = async (req, res) => {
   try {
@@ -337,7 +396,7 @@ exports.createOrderWithRazorpay = async (req, res) => {
     // Update your order in the database with the Razorpay order ID
 
     // Send the Razorpay order ID in the response
-    res.status(201).json({ success: true, razorpayOrderId });
+    res.status(200).json({ success: true, razorpayOrderId });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });

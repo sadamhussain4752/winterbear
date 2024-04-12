@@ -1,6 +1,6 @@
 // controllers/AddCartController.js
 const AddCart = require('../../models/AddCart/AddCartModel');
-const Product = require('../../models/ProductModel/Product');
+const Product = require('../../models/ProductModel/NewModelProduct');
 
 const LANGID = {
     1: "IND",
@@ -20,7 +20,7 @@ exports.createCartItem = async (req, res) => {
       quantity,
     });
 
-    res.status(201).json({ success: true, cartItem: newCartItem });
+    res.status(200).json({ success: true, cartItem: newCartItem });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: 'Server error' });

@@ -148,6 +148,7 @@ module.exports = {
         lat,
         log,
         lang,
+        profile_img = ""
       } = req.body;
 
       // Check if email, mobile, and username are already taken
@@ -185,6 +186,7 @@ module.exports = {
         password: hashedPassword,
         username: firstname,
         lang,
+        profile_img
       });
 
       // Handle Admin creation if UserType is 2
@@ -213,7 +215,7 @@ module.exports = {
         response.admin = newAdmin;
       }
 
-      res.status(201).json(response);
+      res.status(200).json(response);
     } catch (error) {
       console.error(error);
       res
@@ -439,7 +441,7 @@ module.exports = {
           response.admin = updatedAdmin;
         }
 
-        res.status(201).json(response);
+        res.status(200).json(response);
       } else {
         const updatedUser = await updateUser(adminId, updateData);
         res.status(200).json({ success: true, user: updatedUser });
@@ -483,7 +485,7 @@ module.exports = {
           response.admin = updatedAdmin;
         }
 
-        res.status(201).json(response);
+        res.status(200).json(response);
       } else {
         const updatedUser = await updateUser(UserId, updateData);
         res.status(200).json({ success: true, user: updatedUser });

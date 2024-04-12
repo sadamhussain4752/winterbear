@@ -11,7 +11,8 @@ const OrderSchema = new mongoose.Schema({
     default: 'Pending',
 },  delivery: { type: String, enum: ['Cash', 'Card'], default: 'Cash' }, // Add this field
   createdAt: { type: Date, default: Date.now },
-  razorpay_payment_id:{ type: String, required: true }
+  razorpay_payment_id:{ type: String, required: true },
+  applycoupon:{type: String}
 });
 
 const Order = mongoose.model('Order', OrderSchema);

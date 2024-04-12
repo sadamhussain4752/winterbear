@@ -19,7 +19,7 @@ exports.createFaq = async (req, res) => {
         lang,
       });
   
-      res.status(201).json({ success: true, faq: newFaq });
+      res.status(200).json({ success: true, faq: newFaq });
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: "Server error" });

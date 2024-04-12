@@ -1,6 +1,5 @@
 // controllers/Brand.js
 const Brand = require("../../models/Brand/BrandModel");
-const {BASEURL} = require("../../utils/Constants")
 
 // Create a new brand
 exports.createBrand = async (req, res) => {
@@ -13,14 +12,14 @@ exports.createBrand = async (req, res) => {
     const newBrand = await Brand.create({
       name,
       description,
-      imageUrl: imagePaths[0],
+      imageUrl: req.fileUrls[0],
       isActive,
       createdBy,
       category_id,
       lang,
     });
 
-    res.status(201).json({ success: true, brand: newBrand });
+    res.status(200).json({ success: true, brand: newBrand });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
@@ -81,7 +80,7 @@ exports.updateBrandById = async (req, res) => {
     // Update the brand fields
     existingBrand.name = name;
     existingBrand.description = description;
-    existingBrand.imageUrl = imagePaths[0];;
+    existingBrand.imageUrl = req.fileUrls[0];
     existingBrand.createdBy = createdBy;
     existingBrand.lang = lang;
 

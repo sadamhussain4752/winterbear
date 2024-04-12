@@ -18,6 +18,7 @@ const ProductSchema = new mongoose.Schema({
   brand_id: { type: String, required: true }, // Assuming you have a Category model
   createdAt: { type: Date, default: Date.now },
   lang: { type: String },
+  delivered_type:{ type: String }
 });
 
 const Product = mongoose.model('Product', ProductSchema);

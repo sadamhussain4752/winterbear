@@ -35,7 +35,7 @@ exports.createBannerItem = async (req, res) => {
       lang,
     });
 
-    res.status(201).json({ success: true, banner: newBanner });
+    res.status(200).json({ success: true, banner: newBanner });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
