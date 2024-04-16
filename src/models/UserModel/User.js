@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
-  
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
   UserType: { type: String, required: true },
@@ -13,7 +12,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String },
   lang: { type: String, unique: false },
   profile_img: {type: String},
-  loyalty_point : {type: String, default :"0"},
+  loyalty_point: {type: Number, default: 0}, // Changed type to Number
   verified: {
     type: Boolean,
     required: true,

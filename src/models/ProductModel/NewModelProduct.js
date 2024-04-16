@@ -16,6 +16,8 @@ const ProductSchema = new mongoose.Schema({
   createdBy: { type: String,}, // Assuming you have a User model
   category: { type: String, }, // Assuming you have a Category model
   brand_id: { type: String, }, // Assuming you have a Category model
+  sub_brand_id: {type: String},
+  category_id: { type: String},
   createdAt: { type: Date, default: Date.now },
   lang: { type: String },
   shipment:{ type: String },

@@ -11,6 +11,8 @@ router.get('/GetAllReviews', ratingController.getAllRatings);
 // Get a rating by ID
 router.get('/GetReviewByID/:id', ratingController.getRatingById);
 
+router.get('/GetProductByID/:id', ratingController.getProductById);
+
 // Update a rating by ID
 router.put('/UpdateReviewByID/:id', ratingController.updateRating);
 

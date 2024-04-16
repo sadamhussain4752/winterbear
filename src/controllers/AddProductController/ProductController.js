@@ -72,6 +72,19 @@ exports.getAllProducts = async (req, res) => {
     return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
   }
   
+  // const products = await Product.updateMany(
+  //   {}, // Empty filter to match all documents
+  //   {
+  //     $set: {
+  //       category_id:"659fd179f6a284448bd60d1a",
+  //       brand_id: "661c15ee93c4b15df1eac798",
+  //       sub_brand_id:"66028787d359867aebe239e9"
+  //     },
+  //   }
+  // );
+  // console.log(products);
+
+  
 
   try {
     const products   = await Product.find();

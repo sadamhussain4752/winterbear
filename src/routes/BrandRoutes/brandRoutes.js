@@ -14,7 +14,7 @@ router.get('/allbrand', BrandController.getAllBrands);
 router.get('/brand/:id', BrandController.getBrandById);
 
 // Updated a specific Brand by ID
-router.put('/brand/:id', uploadHandler, BrandController.updateBrandById);
+router.put('/brand/:id', BrandController.updateBrandById);
 
 router.delete('/brand/:id', BrandController.deleteBrandById);
 

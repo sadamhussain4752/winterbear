@@ -2,7 +2,8 @@
 const BannerCard = require("../../models/BannerCard/BannerModel");
 const Category = require("../../models/Category/Category");
 const Brand = require("../../models/Brand/BrandModel");
-const Product = require("../../models/ProductModel/Product");
+const Product = require("../../models/ProductModel/NewModelProduct");
+const SubBrands = require("../../models/SubBrand/SubBrandModel");
 const { BASEURL } = require("../../utils/Constants");
 
 const LANGID = {
@@ -123,7 +124,7 @@ exports.getAllBanners = async (req, res) => {
     const Brands = await Brand.find({ lang: LANGID[lang] });
 
     const Categorys = await Category.find({ lang: LANGID[lang] });
-    
+
 
     res.status(200).json({ success: true, banners, Brands, Categorys });
   } catch (error) {
@@ -161,29 +162,43 @@ exports.getAllBannerbyproduct = async (req, res) => {
         .json({ success: false, error: "Invalid 'lang' parameter" });
     }
 
-    // Fetch categories and brands
+    // Fetch brands based on the 'lang' parameter
     const Brands = await Brand.find({ lang: LANGID[lang] });
 
-    // Fetch products for each brand asynchronously using Promise.all
+
+    // Fetch products and subbrands for each brand asynchronously using Promise.all
     const productsPromises = Brands.map(async (brand) => {
-      const products = await Product.find({
+      console.log(`Fetching products for brand_id: ${brand._id}`);
+
+
+
+      // Fetch subbrands for the current brand
+      const subbrand = await SubBrands.find({
         lang: LANGID[lang],
         brand_id: brand._id,
       });
-      return { brand, products };
+
+      // Fetch products for the current brand
+      const products = await Product.find({
+        brand_id: brand._id,
+      });
+
+      // Log the products found (for debugging)
+      console.log(`Products found for brand_id ${brand._id}:`, products);
+
+      return { brand, products, subbrand };
     });
 
     const productList = await Promise.all(productsPromises);
 
-    // Create a mapping of brands to products
-  
-
+    // Return the product list as a JSON response
     res.status(200).json({ success: true, productList });
   } catch (error) {
-    console.error(error);
+    console.error('Error in getAllBannerbyproduct:', error);
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
 
 
 // Get a specific banner item by ID

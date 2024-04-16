@@ -53,6 +53,23 @@ exports.getRatingById = async (req, res) => {
   }
 };
 
+exports.getProductById = async (req, res) => {
+  try {
+    const productId = req.params.id; // Extract product ID from the URL parameters
+    const ratings = await Rating.find({ productId }); // Find ratings for the given product ID
+
+    if (!ratings || ratings.length === 0) {
+      // If no ratings found, return a 404 response
+      return res.status(404).json({ success: false, message: "No ratings found for the specified product ID" });
+    }
+
+    res.status(200).json({ success: true, ratings });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
 // Update a rating by ID
 exports.updateRating = async (req, res) => {
   try {

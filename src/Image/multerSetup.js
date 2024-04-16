@@ -83,6 +83,7 @@ const uploadHandler = (req, res, next) => {
     } catch (error) {
       console.error('File upload error:', error);
       res.status(500).json({ error });
+      
     }
   });
 };

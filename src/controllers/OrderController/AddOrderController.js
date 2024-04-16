@@ -23,7 +23,6 @@ const orderStatuses = [
   "Returned",
 ];
 
-// Create a new order with payment
 exports.createOrder = async (req, res) => {
   try {
     const { userId, addressId, productIds, totalAmount, delivery, razorpay_payment_id, paymentStatus, applycoupon } = req.body;
@@ -40,12 +39,28 @@ exports.createOrder = async (req, res) => {
       applycoupon
     });
 
+    console.log(newOrder,"newOrder");
+
+    // Find the user by ID and add 10 loyalty points
+    const user = await User.findById(userId);
+    console.log(user,"user");
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    user.loyalty_point += 10; // Add 10 points to the user's loyalty points
+    console.log(user,"loyalty_point ");
+
+    await user.save();
+
     res.status(200).json({ success: true, order: newOrder });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
 
 exports.getAllOrder = async (req, res) => {
   try {
@@ -151,6 +166,8 @@ exports.getAllOrderList = async (req, res) => {
   try {
     // Fetch all orders for the user
     const orderList = await Order.find();
+
+    
 
     // Create an array to store promises for fetching product details
     const orderPromises = orderList.map(async (order) => {
