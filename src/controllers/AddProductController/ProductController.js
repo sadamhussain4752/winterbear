@@ -37,7 +37,7 @@ exports.createProduct = async (req, res) => {
       console.log(req.file,req.files);
       // Assuming "images" is a file field in the form
       const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
-
+       console.log(req.fileUrls);
       const newProduct = await Product.create({
           name,
           description,
@@ -243,7 +243,7 @@ exports.updateProductById = async (req, res) => {
       existingProduct.description = description;
       existingProduct.amount = amount;
       existingProduct.offeramount = offeramount;
-      existingProduct.images = req.fileUrls[0];
+      // existingProduct.images = req.fileUrls ;
       existingProduct.color = color;
       existingProduct.weight = weight;
       existingProduct.dimensions = dimensions;

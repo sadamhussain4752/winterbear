@@ -14,7 +14,7 @@ const multerMemoryStorage = multer.memoryStorage();
 
 const localUploadArray = multer({
   storage: multerMemoryStorage,
-  limits: { fileSize: 4 * 1024 * 1024 },
+  limits: { fileSize: 17 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg') {
       cb(null, true);

@@ -12,7 +12,7 @@ const CouponSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   lang: { type: String },
   isShow_display: { type: Boolean, default: true },
-
+  coupon_type: { type: String}
 });
 
 const Coupon = mongoose.model("Coupon", CouponSchema);
