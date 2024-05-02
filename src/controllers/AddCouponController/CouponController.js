@@ -45,6 +45,7 @@ exports.createCoupon = async (req, res) => {
       maxlimit,
       isShow_display,
       lang,
+      screen_Id
     } = req.body;
     const newCoupon = await Coupon.create({
       code,
@@ -56,6 +57,7 @@ exports.createCoupon = async (req, res) => {
       category_id,
       isShow_display,
       lang,
+      screen_Id
     });
     res.status(200).json({ success: true, coupon: newCoupon });
   } catch (error) {

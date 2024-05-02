@@ -78,14 +78,12 @@ exports.updateBrandById = async (req, res) => {
     }
 
     // Update the brand fields
-    // existingBrand.name = name;
-    // existingBrand.description = description;
-    // if(imageUrl){
-    //   existingBrand.imageUrl = req.fileUrls[0];
-    // }
-    // existingBrand.createdBy = createdBy;
+    existingBrand.name = name;
+    existingBrand.description = description;
+    existingBrand.imageUrl = req.fileUrls[0];
+    existingBrand.createdBy = createdBy;
     existingBrand.category_id = category_id;
-    // existingBrand.lang = lang;
+    existingBrand.lang = lang;
 
     // Save the updated brand
     const updatedBrand = await existingBrand.save();

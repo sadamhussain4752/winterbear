@@ -30,9 +30,11 @@ exports.createProduct = async (req, res) => {
         isActive,
         createdBy,
         category,
+        category_id,
         brand_id,
         lang,
-        qty
+        qty,
+        sub_brand_id
       } = req.body;
       console.log(req.file,req.files);
       // Assuming "images" is a file field in the form
@@ -53,10 +55,13 @@ exports.createProduct = async (req, res) => {
           createdBy,
           category,
           brand_id,
+          category_id,
           lang,
-          qty
+          qty,
+          sub_brand_id
       });
 
+  console.log(products);
       res.status(200).json({ success: true, product: newProduct });
   } catch (error) {
       console.error(error);
@@ -225,7 +230,10 @@ exports.updateProductById = async (req, res) => {
         category,
         lang,
         brand_id,
-        qty
+        qty,
+        category_id,
+        sub_brand_id
+
       } = req.body;
   
       // Check if the Product exists
@@ -252,6 +260,8 @@ exports.updateProductById = async (req, res) => {
       existingProduct.isActive = isActive;
       existingProduct.createdBy = createdBy;
       existingProduct.category = category;
+      existingProduct.category_id = category_id;
+      existingProduct.sub_brand_id = sub_brand_id;
       existingProduct.brand_id = brand_id;
       existingProduct.lang = lang;
       existingProduct.qty = qty;
