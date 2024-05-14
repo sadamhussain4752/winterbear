@@ -77,17 +77,16 @@ exports.getAllProducts = async (req, res) => {
     return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
   }
   
-  // const products = await Product.updateMany(
-  //   {}, // Empty filter to match all documents
-  //   {
-  //     $set: {
-  //       category_id:"659fd179f6a284448bd60d1a",
-  //       brand_id: "661c15ee93c4b15df1eac798",
-  //       sub_brand_id:"66028787d359867aebe239e9"
-  //     },
-  //   }
-  // );
-  // console.log(products);
+  const products = await Product.updateMany(
+    {}, // Empty filter to match all documents
+    {
+      $set: {
+        key_word:"",
+      },
+    }
+  );
+
+  console.log(products);
 
   
 
@@ -232,7 +231,8 @@ exports.updateProductById = async (req, res) => {
         brand_id,
         qty,
         category_id,
-        sub_brand_id
+        sub_brand_id,
+        key_word
 
       } = req.body;
   
@@ -265,6 +265,7 @@ exports.updateProductById = async (req, res) => {
       existingProduct.brand_id = brand_id;
       existingProduct.lang = lang;
       existingProduct.qty = qty;
+      existingProduct.key_word = key_word;
   
       // Save the updated Product
       const updatedProduct = await existingProduct.save();

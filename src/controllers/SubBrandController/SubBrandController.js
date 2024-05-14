@@ -77,7 +77,7 @@ exports.updateSubBrandById = async (req, res) => {
     // Update the sub brand fields
     existingSubBrand.name = name;
     existingSubBrand.description = description;
-    existingSubBrand.imageUrl = req.fileUrls[0];
+    // existingSubBrand.imageUrl = req.fileUrls[0];
     existingSubBrand.createdBy = createdBy;
     existingSubBrand.lang = lang;
     existingSubBrand.category_id = category_id;

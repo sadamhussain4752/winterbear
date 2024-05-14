@@ -21,7 +21,7 @@ const FAQRoutes = require("./routes/AddFaqRoutes/faqRoutes")
 const RatingRoute = require("./routes/AddRatingRoutes/RatingRoutes")
 const EventRoute = require("./routes/AddEventRoutes/EventRoutes")
 const BlogRoutes = require("./routes/AddBlogsRoutes/BlogRoutes")
-
+const WishlistRoutes = require("./routes/addwishlistRouters/WishlistRoutes")
 const files = fs.readFileSync('./62ACF8182B9E5DCCC1E610CE4B2C525F.txt') 
 
 const app = express();
@@ -57,6 +57,7 @@ app.use("/api/product", productRoutes);
 app.use("/api/coupon", couponRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/addcart", addcartRoutes);
+app.use("/api/wishlist", WishlistRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/header", BannerRoutes);
 app.use("/api/staff", EmployeeRoutes);

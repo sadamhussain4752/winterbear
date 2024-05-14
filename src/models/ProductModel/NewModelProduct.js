@@ -23,7 +23,9 @@ const ProductSchema = new mongoose.Schema({
   shipment:{ type: String },
   catalogueShoot:{ type: String },
   socialMedia:{ type: String },
-  websiteInfographics: {type: String}
+  websiteInfographics: {type: String},
+  key_word: String
+
 });
 
 

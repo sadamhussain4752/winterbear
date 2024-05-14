@@ -31,7 +31,7 @@ exports.createBannerItem = async (req, res) => {
     const newBanner = await BannerCard.create({
       name,
       description,
-      imageUrl: imagePaths && imagePaths.length > 0 ? imagePaths[0] : null,
+      imageUrl: req.fileUrls[0],
       createdBy,
       lang,
     });
@@ -64,7 +64,7 @@ exports.updateBannerItem = async (req, res) => {
         description,
         isActive,
         createdBy,
-        imageUrl: imagePaths && imagePaths.length > 0 ? imagePaths[0] : null,
+        imageUrl: req.fileUrls[0],
         lang,
       },
       { new: true }

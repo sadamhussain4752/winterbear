@@ -43,7 +43,7 @@ exports.getCategoryById = async (req, res) => {
     const categoryId = req.params.id;
     const category = await Category.findById(categoryId);
 
-    if (!category) {
+    if (!category) {category_img_desktop
       return res
         .status(404)
         .json({ success: false, message: "Category not found" });
@@ -78,7 +78,11 @@ exports.updateCategoryById = async (req, res) => {
     existingCategory.name = name;
     // existingCategory.isActive = isActive;
     existingCategory.description = description;
-    existingCategory.imageUrl = req.fileUrls[0];
+    // existingCategory.imageUrl = req.fileUrls[0];
+  // existingCategory.category_img_desktop = req.fileUrls[0];
+    existingCategory.category_img_mobile = req.fileUrls[0];
+
+
     existingCategory.createdBy = createdBy;
     existingCategory.lang = lang;
 
