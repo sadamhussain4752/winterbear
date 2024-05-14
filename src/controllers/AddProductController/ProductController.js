@@ -1,7 +1,7 @@
 // controllers/Product.js
 const Product = require("../../models/ProductModel/NewModelProduct");
-const {BASEURL} = require('../../utils/Constants')
-const {uploadHandlers} = require("../../Image/uploadHandlers")
+const { BASEURL } = require('../../utils/Constants')
+const { uploadHandlers } = require("../../Image/uploadHandlers")
 
 const ExcelJS = require('exceljs');
 const fs = require('fs');
@@ -17,55 +17,55 @@ const LANGID = {
 exports.createProduct = async (req, res) => {
 
   try {
-      const {
-        name,
-        description,
-        amount,
-        offeramount,
-        color,
-        weight,
-        dimensions,
-        sku,
-        availability,
-        isActive,
-        createdBy,
-        category,
-        category_id,
-        brand_id,
-        lang,
-        qty,
-        sub_brand_id
-      } = req.body;
-      console.log(req.file,req.files);
-      // Assuming "images" is a file field in the form
-      const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
-       console.log(req.fileUrls);
-      const newProduct = await Product.create({
-          name,
-          description,
-          amount,
-          offeramount,
-          images: req.fileUrls[0], // Storing images as base64-encoded string, adjust as needed
-          color,
-          weight,
-          dimensions,
-          sku,
-          availability,
-          isActive,
-          createdBy,
-          category,
-          brand_id,
-          category_id,
-          lang,
-          qty,
-          sub_brand_id
-      });
+    const {
+      name,
+      description,
+      amount,
+      offeramount,
+      color,
+      weight,
+      dimensions,
+      sku,
+      availability,
+      isActive,
+      createdBy,
+      category,
+      category_id,
+      brand_id,
+      lang,
+      qty,
+      sub_brand_id
+    } = req.body;
+    console.log(req.file, req.files);
+    // Assuming "images" is a file field in the form
+    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
+    console.log(req.fileUrls);
+    const newProduct = await Product.create({
+      name,
+      description,
+      amount,
+      offeramount,
+      images: req.fileUrls[0], // Storing images as base64-encoded string, adjust as needed
+      color,
+      weight,
+      dimensions,
+      sku,
+      availability,
+      isActive,
+      createdBy,
+      category,
+      brand_id,
+      category_id,
+      lang,
+      qty,
+      sub_brand_id
+    });
 
-  console.log(products);
-      res.status(200).json({ success: true, product: newProduct });
+    console.log(products);
+    res.status(200).json({ success: true, product: newProduct });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, error: "Server error" });
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
   }
 }
 
@@ -76,22 +76,20 @@ exports.getAllProducts = async (req, res) => {
   if (!lang || !LANGID[lang]) {
     return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
   }
-  
-  const products = await Product.updateMany(
-    {}, // Empty filter to match all documents
-    {
-      $set: {
-        key_word:"",
-      },
-    }
-  );
 
-  console.log(products);
-
-  
 
   try {
-    const products   = await Product.find();
+    // Implement pagination and limit the number of records returned
+    const pageNumber = parseInt(req.query.page) || 1; // Default page number is 1
+    const pageSize = parseInt(req.query.limit) || 2000; // Default page size is 10
+
+    const skip = (pageNumber - 1) * pageSize;
+
+    const products = await Product.find({}) // Select only necessary fields
+      .skip(skip)
+      .limit(pageSize)
+      .lean(); // Convert documents to plain JavaScript objects for better performance
+
     res.status(200).json({ success: true, products });
   } catch (error) {
     console.error(error);
@@ -170,7 +168,7 @@ exports.getUserProducts = async (req, res) => {
       return res.status(400).json({ success: false, error: "Invalid language code" });
     }
 
-    
+
 
     const query = {
       lang: LANGID[lang],
@@ -212,71 +210,73 @@ exports.getProductById = async (req, res) => {
 
 // Update a specific Product by ID
 exports.updateProductById = async (req, res) => {
-    try {
-      const ProductId = req.params.id;
-      const {
-        name,
-        description,
-        amount,
-        offeramount,
-        color,
-        weight,
-        dimensions,
-        sku,
-        availability,
-        isActive,
-        createdBy,
-        category,
-        lang,
-        brand_id,
-        qty,
-        category_id,
-        sub_brand_id,
-        key_word
+  try {
+    const ProductId = req.params.id;
+    const {
+      name,
+      description,
+      amount,
+      offeramount,
+      color,
+      weight,
+      dimensions,
+      sku,
+      availability,
+      isActive,
+      createdBy,
+      category,
+      lang,
+      brand_id,
+      qty,
+      category_id,
+      sub_brand_id,
+      key_word
+    } = req.body;
 
-      } = req.body;
-  
-      // Check if the Product exists
-      const existingProduct = await Product.findById(ProductId);
-  
-      if (!existingProduct) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Product not found" });
-      }
-      const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
+    // Check if the Product exists
+    const existingProduct = await Product.findById(ProductId);
 
-      // Update the Product fields
-      existingProduct.name = name;
-      existingProduct.description = description;
-      existingProduct.amount = amount;
-      existingProduct.offeramount = offeramount;
-     // existingProduct.images = req.fileUrls ;
-      existingProduct.color = color;
-      existingProduct.weight = weight;
-      existingProduct.dimensions = dimensions;
-      existingProduct.sku = sku;
-      existingProduct.availability = availability;
-      existingProduct.isActive = isActive;
-      existingProduct.createdBy = createdBy;
-      existingProduct.category = category;
-      existingProduct.category_id = category_id;
-      existingProduct.sub_brand_id = sub_brand_id;
-      existingProduct.brand_id = brand_id;
-      existingProduct.lang = lang;
-      existingProduct.qty = qty;
-      existingProduct.key_word = key_word;
-  
-      // Save the updated Product
-      const updatedProduct = await existingProduct.save();
-  
-      res.status(200).json({ success: true, product: updatedProduct });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, error: "Server error" });
+    if (!existingProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     }
-  };
-  
+
+    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
+
+    // Update the Product fields
+    if (name !== undefined && name !== null) existingProduct.name = name;
+    if (description !== undefined && description !== null) existingProduct.description = description;
+    if (amount !== undefined && amount !== null) existingProduct.amount = amount;
+    if (offeramount !== undefined && offeramount !== null) existingProduct.offeramount = offeramount;
+    // Handle image update if needed
+    // existingProduct.images = req.fileUrls ;
+    if (color !== undefined && color !== null) existingProduct.color = color;
+    if (weight !== undefined && weight !== null) existingProduct.weight = weight;
+    if (dimensions !== undefined && dimensions !== null) existingProduct.dimensions = dimensions;
+    if (sku !== undefined && sku !== null) existingProduct.sku = sku;
+    if (availability !== undefined && availability !== null) existingProduct.availability = availability;
+    if (isActive !== undefined && isActive !== null) existingProduct.isActive = isActive;
+    if (createdBy !== undefined && createdBy !== null) existingProduct.createdBy = createdBy;
+    if (category !== undefined && category !== null) existingProduct.category = category;
+    if (category_id !== undefined && category_id !== null) existingProduct.category_id = category_id;
+    if (sub_brand_id !== undefined && sub_brand_id !== null) existingProduct.sub_brand_id = sub_brand_id;
+    if (brand_id !== undefined && brand_id !== null) existingProduct.brand_id = brand_id;
+    if (lang !== undefined && lang !== null) existingProduct.lang = lang;
+    if (!isNaN(parseFloat(qty)) && isFinite(qty)) existingProduct.qty = qty; // Check if qty is a valid number
+    if (key_word !== undefined && key_word !== null) existingProduct.key_word = key_word;
+
+    // Save the updated Product
+    const updatedProduct = await existingProduct.save();
+
+    res.status(200).json({ success: true, product: updatedProduct });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+
 
 // Delete a specific Product by ID
 exports.deleteProductById = async (req, res) => {

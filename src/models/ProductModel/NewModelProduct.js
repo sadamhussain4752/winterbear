@@ -11,7 +11,7 @@ const ProductSchema = new mongoose.Schema({
   dimensions: String,
   sku: String,
   availability: String,
-  qty: { type: Number },
+  qty: Number,
   isActive: { type: Boolean, default: true },
   createdBy: { type: String,}, // Assuming you have a User model
   category: { type: String, }, // Assuming you have a Category model
