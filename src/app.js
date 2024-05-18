@@ -1,6 +1,6 @@
 // app.js
 const express = require("express");
-const functions = require("firebase-functions");
+
 const path = require("path");
 const fs = require("fs");
 const cors = require("cors"); // Import cors middleware
@@ -71,7 +71,7 @@ app.use("/api/blog",BlogRoutes);
 // Additional routes or middleware, if any
 
 
-// exports.emailjs = functions.https.onRequest(app);
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
