@@ -71,8 +71,7 @@ exports.updateCategoryById = async (req, res) => {
         .json({ success: false, message: "Category not found" });
     }
 
-    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
-    console.log(imagePaths);
+  
     
     // Update the category fields
     existingCategory.name = name;
@@ -80,7 +79,7 @@ exports.updateCategoryById = async (req, res) => {
     existingCategory.description = description;
     // existingCategory.imageUrl = req.fileUrls[0];
   // existingCategory.category_img_desktop = req.fileUrls[0];
-    existingCategory.category_img_mobile = req.fileUrls[0];
+    // existingCategory.category_img_mobile = req.fileUrls[0];
 
 
     existingCategory.createdBy = createdBy;

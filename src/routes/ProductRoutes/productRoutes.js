@@ -19,6 +19,9 @@ router.get("/ProductUserId", ProductController.getUserProducts);
 // Get a specific Product by ID
 router.get("/Product/:id", ProductController.getProductById);
 
+router.get("/Productsss", ProductController.getProductByUpload);
+
+
 // Updated a specific Product by ID
 router.put("/Product/:id",uploadHandler, ProductController.updateProductById);
 

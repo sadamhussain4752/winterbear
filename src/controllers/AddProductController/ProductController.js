@@ -160,6 +160,9 @@ exports.getAllProducts = async (req, res) => {
 
 
 
+
+
+
 // Get user-specific Products by language and search criteria
 exports.getUserProducts = async (req, res) => {
   try {
@@ -182,6 +185,85 @@ exports.getUserProducts = async (req, res) => {
     const userProducts = await Product.find(query);
 
     res.status(200).json({ success: true, userProducts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+// Get a specific Product by ID
+exports.getProductByUpload = async (req, res) => {
+  try {
+    const Products = await Product.find();
+
+    try {
+    const filePath = "/home/root-mac/Documents/GitHub/winterbear-backend/Sheet1.json"; // Path to the JSON file
+
+    // Read JSON data from the file
+    const rawData = fs.readFileSync(filePath);
+    const productsData = JSON.parse(rawData); // Parse JSON data
+
+    // Map each object in the JSON array to a new object conforming to the ProductSchema
+    const productsToAdd = [];
+
+    for (const product of productsData) {
+      const amount = parseFloat(product['MRP']);
+      if (isNaN(amount)) {
+        console.error(`Invalid MRP value for product: ${product['SKU Name']}`);
+        continue; // Skip this product
+      }
+
+      try {
+        console.log(product['Product']);
+        // const fileUrls = await uploadHandlers(product['Product']); // Upload image for the product
+
+        const newProduct = {
+          name: product['Category'], // Map 'Product' to 'name'
+          description: product['SKU Name'],
+          amount: amount, // Use the parsed amount
+          sku: product['SKU Name'], // Map 'SKU Name' to 'sku'
+          category: product['Category'], // Map 'Category' to 'category'
+          offeramount: 0, // Assuming default offer amount is 0
+          color: "RED", // Example default color
+          weight: "500g", // Example default weight
+          dimensions: "10 x 10", // Example default dimensions
+          availability: "IN STOCK", // Example default availability
+          qty: "", // Assuming default quantity is empty
+          createdBy: "", // Assuming no user is specified initially
+          brand_id: "", // Assuming no brand is specified initially
+          createdAt: new Date(), // Assuming current date as creation date
+          lang: "INR", // Example language
+          images: fileUrls, // Set fileUrls as images array
+          shipment: product['Shipment'],
+          catalogueShoot: product['Catalouge Shoot'], // Correcting the misspelled key
+          socialMedia: product['Social Media'], // Correcting the space in the key
+          websiteInfographics: product['Website Infograpics'], // Correcting the misspelled key
+        };
+
+        productsToAdd.push(newProduct);
+      } catch (error) {
+        console.error('File upload error:', error);
+        return res.status(500).json({ success: false, error: "File upload error" });
+      }
+    }
+
+    // Insert products into the database
+    // const insertedProducts = await Product.insertMany(productsToAdd);
+
+    return res.status(200).json({ success: true, productsToAdd });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, error: "Server error" });
+  }
+
+    if (!Products) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Products not found" });
+    }
+
+    res.status(200).json({ success: true, Products });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
@@ -250,7 +332,7 @@ exports.updateProductById = async (req, res) => {
     if (amount !== undefined && amount !== null) existingProduct.amount = amount;
     if (offeramount !== undefined && offeramount !== null) existingProduct.offeramount = offeramount;
     // Handle image update if needed
-    // existingProduct.images = req.fileUrls ;
+    existingProduct.images = req.fileUrls ;
     if (color !== undefined && color !== null) existingProduct.color = color;
     if (weight !== undefined && weight !== null) existingProduct.weight = weight;
     if (dimensions !== undefined && dimensions !== null) existingProduct.dimensions = dimensions;
