@@ -12,15 +12,30 @@ const LANGID = {
 // Create a new item in the cart
 exports.createCartItem = async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
+    const { userId, productId, quantity  } = req.body;
+    const existingCartItem = await AddCart.findOne({ userId, productId });
 
-    const newCartItem = await AddCart.create({
-      userId,
-      productId,
-      quantity,
-    });
 
-    res.status(200).json({ success: true, cartItem: newCartItem });
+    // Ensure that the quantity is a number
+    const parsedQuantity = parseInt(quantity, 10);
+
+    if (!isNaN(parsedQuantity) && existingCartItem) {
+      // If it exists, update the quantity
+      existingCartItem.quantity += parsedQuantity;
+      await existingCartItem.save();
+      res.status(200).json({ success: true, cartItem: existingCartItem });
+    } else if (!isNaN(parsedQuantity)) {
+      // If it doesn't exist, create a new cart item
+      const newCartItem = await AddCart.create({
+        userId,
+        productId,
+        quantity: parsedQuantity,
+      });
+      res.status(200).json({ success: true, cartItem: newCartItem });
+    } else {
+      // Handle the case where quantity is not a valid number
+      res.status(400).json({ success: false, error: 'Invalid quantity' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: 'Server error' });

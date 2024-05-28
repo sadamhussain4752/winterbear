@@ -3,14 +3,26 @@ const Wishlist = require('../../models/wishlist/WishListModel');
 const Product = require('../../models/ProductModel/NewModelProduct');
 
 // Create a new item in the wishlist
+// Create or remove an item in the wishlist
 exports.createWishlistItem = async (req, res) => {
   try {
     const { userId, productId } = req.body;
 
-    const newWishlistItem = await Wishlist.create({
-      userId,
-      productId,
-    });
+    // Check for missing fields
+    if (!userId || !productId) {
+      return res.status(400).json({ success: false, message: 'User ID and Product ID are required' });
+    }
+
+    // Check for duplicate productId for the same userId
+    const existingItem = await Wishlist.findOne({ userId, productId });
+    if (existingItem) {
+      // If the item exists, remove it from the wishlist
+      await Wishlist.deleteOne({ userId, productId });
+      return res.status(200).json({ success: true, message: 'Product removed from wishlist' });
+    }
+
+    // Create a new wishlist item
+    const newWishlistItem = await Wishlist.create({ userId, productId });
 
     res.status(200).json({ success: true, wishlistItem: newWishlistItem });
   } catch (error) {
@@ -18,6 +30,8 @@ exports.createWishlistItem = async (req, res) => {
     res.status(500).json({ success: false, error: 'Server error' });
   }
 };
+
+
 
 // Get all wishlist items for a specific user
 exports.getWishlist = async (req, res) => {

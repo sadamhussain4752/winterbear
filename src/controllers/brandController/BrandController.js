@@ -31,7 +31,6 @@ exports.getAllBrands = async (req, res) => {
   try {
     const brands = await Brand.find();
 
-   
 
     res.status(200).json({ success: true, brands });
   } catch (error) {
@@ -63,27 +62,28 @@ exports.getBrandById = async (req, res) => {
 exports.updateBrandById = async (req, res) => {
   try {
     const brandId = req.params.id;
-    const { name, description, createdBy, lang,category_id } = req.body;
-
+    const { name, description, createdBy, lang, category_id } = req.body;
     const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
-
 
     // Check if the brand exists
     const existingBrand = await Brand.findById(brandId);
 
     if (!existingBrand) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Brand not found" });
+      return res.status(404).json({ success: false, message: "Brand not found" });
     }
 
-    // Update the brand fields
-    existingBrand.name = name;
-    existingBrand.description = description;
-    existingBrand.imageUrl = req.fileUrls[0];
-    existingBrand.createdBy = createdBy;
-    existingBrand.category_id = category_id;
-    existingBrand.lang = lang;
+    // Update only the provided fields
+    if (name !== undefined) existingBrand.name = name;
+    if (description !== undefined) existingBrand.description = description;
+    if (createdBy !== undefined) existingBrand.createdBy = createdBy;
+    if (category_id !== undefined) existingBrand.category_id = category_id;
+    if (lang !== undefined) existingBrand.lang = lang;
+
+    // Update images if provided
+    if (imagePaths) {
+      existingBrand.imageUrl = imagePaths[0]; // Assuming the first image is for imageUrl
+      existingBrand.banner_img = imagePaths[0]; // Assuming the first image is for banner_img
+    }
 
     // Save the updated brand
     const updatedBrand = await existingBrand.save();

@@ -16,9 +16,9 @@ const LANGID = {
 // Create a new item in the banner
 exports.createBannerItem = async (req, res) => {
   try {
-    const { name, description, createdBy, lang } = req.body;
+    const { name, description, createdBy, lang ,link_brand } = req.body;
 
-    if (!name || !description || !createdBy || !lang) {
+    if (!name || !description || !createdBy || !lang || !link_brand) {
       return res
         .status(400)
         .json({ success: false, error: "Missing required fields" });
@@ -34,6 +34,8 @@ exports.createBannerItem = async (req, res) => {
       imageUrl: req.fileUrls[0],
       createdBy,
       lang,
+      link_brand,
+      banner_img_mob:""
     });
 
     res.status(200).json({ success: true, banner: newBanner });
@@ -47,9 +49,9 @@ exports.createBannerItem = async (req, res) => {
 exports.updateBannerItem = async (req, res) => {
   try {
     const bannerItemId = req.params.id;
-    const { name, description, isActive, createdBy, lang } = req.body;
+    const { name, description, isActive, createdBy, lang,banner_img_mob,link_brand } = req.body;
 
-    if (!name || !description || !isActive || !createdBy || !lang) {
+    if (!name || !description || !isActive || !createdBy || !lang ) {
       return res
         .status(400)
         .json({ success: false, error: "Missing required fields" });
@@ -66,6 +68,8 @@ exports.updateBannerItem = async (req, res) => {
         createdBy,
         imageUrl: req.fileUrls[0],
         lang,
+        link_brand,
+        // banner_img_mob:""
       },
       { new: true }
     );
@@ -136,6 +140,9 @@ exports.getBannerslist = async (req, res) => {
   try {
     const { lang } = req.query;
 
+
+   
+    console.log(products);
     // Validate 'lang' parameter
     if (!lang || !LANGID[lang]) {
       return res

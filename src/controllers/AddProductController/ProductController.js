@@ -218,12 +218,12 @@ exports.getProductByUpload = async (req, res) => {
         // const fileUrls = await uploadHandlers(product['Product']); // Upload image for the product
 
         const newProduct = {
-          name: product['Category'], // Map 'Product' to 'name'
-          description: product['SKU Name'],
+          name: product['Product Name '], // Map 'Product' to 'name'
+          description: product['Basic Description '],
           amount: amount, // Use the parsed amount
-          sku: product['SKU Name'], // Map 'SKU Name' to 'sku'
+          sku: product['SKU No '], // Map 'SKU Name' to 'sku'
           category: product['Category'], // Map 'Category' to 'category'
-          offeramount: 0, // Assuming default offer amount is 0
+          offeramount: amount + 100, // Assuming default offer amount is 0
           color: "RED", // Example default color
           weight: "500g", // Example default weight
           dimensions: "10 x 10", // Example default dimensions
@@ -233,10 +233,10 @@ exports.getProductByUpload = async (req, res) => {
           brand_id: "", // Assuming no brand is specified initially
           createdAt: new Date(), // Assuming current date as creation date
           lang: "INR", // Example language
-          images: fileUrls, // Set fileUrls as images array
+          images: ["https://storage.googleapis.com/email-js-1a09b.appspot.com/winterbear/1715950793452-140559355"], // Set fileUrls as images array
           shipment: product['Shipment'],
-          catalogueShoot: product['Catalouge Shoot'], // Correcting the misspelled key
-          socialMedia: product['Social Media'], // Correcting the space in the key
+          catalogueShoot: product['Sub-category'], // Correcting the misspelled key
+          socialMedia: product['Brand'], // Correcting the space in the key
           websiteInfographics: product['Website Infograpics'], // Correcting the misspelled key
         };
 
@@ -332,7 +332,7 @@ exports.updateProductById = async (req, res) => {
     if (amount !== undefined && amount !== null) existingProduct.amount = amount;
     if (offeramount !== undefined && offeramount !== null) existingProduct.offeramount = offeramount;
     // Handle image update if needed
-    existingProduct.images = req.fileUrls ;
+    // existingProduct.images = req.fileUrls ;
     if (color !== undefined && color !== null) existingProduct.color = color;
     if (weight !== undefined && weight !== null) existingProduct.weight = weight;
     if (dimensions !== undefined && dimensions !== null) existingProduct.dimensions = dimensions;

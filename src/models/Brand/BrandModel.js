@@ -10,6 +10,8 @@ const BrandSchema = new mongoose.Schema({
   category_id: { type: String },
   createdAt: { type: Date, default: Date.now },
   lang: { type: String, required: true },
+  banner_img: [String], // Array to store multiple image URLs
+
 
 });
 
