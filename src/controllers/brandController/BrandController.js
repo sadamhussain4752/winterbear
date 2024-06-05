@@ -30,7 +30,7 @@ exports.createBrand = async (req, res) => {
 exports.getAllBrands = async (req, res) => {
   try {
     const brands = await Brand.find();
-
+  
 
     res.status(200).json({ success: true, brands });
   } catch (error) {
@@ -78,11 +78,13 @@ exports.updateBrandById = async (req, res) => {
     if (createdBy !== undefined) existingBrand.createdBy = createdBy;
     if (category_id !== undefined) existingBrand.category_id = category_id;
     if (lang !== undefined) existingBrand.lang = lang;
-
+    console.log(req.fileUrls,"req.fileUrls");
     // Update images if provided
-    if (imagePaths) {
-      existingBrand.imageUrl = imagePaths[0]; // Assuming the first image is for imageUrl
-      existingBrand.banner_img = imagePaths[0]; // Assuming the first image is for banner_img
+    if (req.fileUrls) {
+      // existingBrand.imageUrl = req.fileUrls[0]; // Assuming the first image is for imageUrl
+      // existingBrand.banner_img = req.fileUrls[0]; // Assuming the first image is for banner_img
+      existingBrand.banner_mob_img = req.fileUrls; // Assuming the first image is for banner_img
+
     }
 
     // Save the updated brand

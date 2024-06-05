@@ -495,4 +495,44 @@ module.exports = {
       res.status(500).json({ success: false, error: "Server error" });
     }
   },
+  userImageGetById: async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const { profile_img,firstName,lastName } = req.body;
+  
+      // Check if the user with the given ID exists
+      const userData = await User.findById(userId);
+  
+      if (!userData) {
+        return res.status(404).json({ success: false, error: "User not found" });
+      }
+  
+      // Update the profile_img if provided
+      if (profile_img !== undefined && profile_img !== null) {
+        userData.profile_img = profile_img;
+      }
+       // Update the profile_img if provided
+       if (firstName !== undefined && firstName !== null) {
+        userData.firstname = firstName;
+      }
+       // Update the profile_img if provided
+       if (lastName !== undefined && lastName !== null) {
+        userData.lastname = lastName;
+      }
+  
+      // Save the updated user
+      await userData.save();
+  
+      res.status(200).json({
+        success: true,
+        user: userData,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+  }
+  
 };
+
+

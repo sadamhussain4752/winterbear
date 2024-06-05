@@ -247,10 +247,77 @@ exports.getProductByUpload = async (req, res) => {
       }
     }
 
-    // Insert products into the database
-    // const insertedProducts = await Product.insertMany(productsToAdd);
+    // const products = await Product.updateMany(
+    //   {
+    //     $or: [
+    //       { images: { $exists: false } }, // lang key does not exist
+    //       { images: null },               // lang key is null
+    //       { images: "" }                  // lang key is an empty string
+    //     ]
+    //   },
+    //   {
+    //     $set: {
+    //       images: ["https://storage.googleapis.com/email-js-1a09b.appspot.com/winterbear/1715950793452-140559355"], // Set fileUrls as images array
 
-    return res.status(200).json({ success: true, productsToAdd });
+    //     },
+    //   }
+    // );
+
+
+  //   async function removeDuplicateProducts(duplicates) {
+  //     if (!duplicates.length) return; // No duplicates to remove
+    
+  //     const skusToDelete = duplicates.map(duplicate => duplicate.sku); // Extract SKUs for deletion
+  //     await Product.deleteMany({ sku: { $in: skusToDelete } }); // Delete products with matching SKUs
+  //   }
+    
+  //   // Example usage:
+  //   (async () => {
+  //     const duplicateList = await checkAllDuplicateSKUs();
+    
+  //     if (duplicateList.length > 0) {
+  //       console.log("Duplicate SKUs found, removing them:");
+  //       await removeDuplicateProducts(duplicateList);
+  //       console.log("Duplicate products removed.");
+  //     } else {
+  //       console.log("No duplicate SKUs found.");
+  //     }
+  //   })();
+  // //  let values = []
+  //   async function checkAllDuplicateSKUs() {
+  //     const pipeline = [
+  //       { $group: { _id: "$sku", count: { $sum: 1 } } }, // Group by SKU and count documents
+  //       { $match: { count: { $gt: 1 } } }, // Filter for groups with count > 1 (duplicates)
+  //     ];
+    
+  //     const duplicates = await Product.aggregate(pipeline);
+  //     return duplicates.map((duplicate) => ({
+  //       sku: duplicate._id,
+  //       count: duplicate.count,
+  //     }));
+  //   }
+    
+  //   // Example usage:
+  //   (async () => {
+  //     const duplicateList = await checkAllDuplicateSKUs();
+    
+  //     if (duplicateList.length > 0) {
+  //       console.log("Duplicate SKUs found:");
+  //       duplicateList.forEach((duplicate) => {
+  //         values.push(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`)
+  //         console.log(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`);
+  //       });
+  //     } else {
+  //       console.log("No duplicate SKUs found across all products.");
+  //     }
+  //   })();
+    
+  //   // Example usage (similar to Option A)
+    
+  //   // Insert products into the database
+  //   // const insertedProducts = await Product.insertMany(productsToAdd);
+
+  //   return res.status(200).json({ success: true, values });
 
   } catch (error) {
     console.error(error);
@@ -333,7 +400,7 @@ exports.updateProductById = async (req, res) => {
     if (offeramount !== undefined && offeramount !== null) existingProduct.offeramount = offeramount;
     // Handle image update if needed
     // existingProduct.images = req.fileUrls ;
-    if (color !== undefined && color !== null) existingProduct.color = color;
+  if (color !== undefined && color !== null) existingProduct.color = color;
     if (weight !== undefined && weight !== null) existingProduct.weight = weight;
     if (dimensions !== undefined && dimensions !== null) existingProduct.dimensions = dimensions;
     if (sku !== undefined && sku !== null) existingProduct.sku = sku;

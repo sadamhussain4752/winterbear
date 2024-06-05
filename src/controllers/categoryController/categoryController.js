@@ -75,7 +75,7 @@ exports.updateCategoryById = async (req, res) => {
     
     // Update the category fields
     existingCategory.name = name;
-    // existingCategory.isActive = isActive;
+    existingCategory.isActive = isActive;
     existingCategory.description = description;
     // existingCategory.imageUrl = req.fileUrls[0];
   // existingCategory.category_img_desktop = req.fileUrls[0];

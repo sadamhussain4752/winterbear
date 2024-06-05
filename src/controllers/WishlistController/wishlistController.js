@@ -36,7 +36,7 @@ exports.createWishlistItem = async (req, res) => {
 // Get all wishlist items for a specific user
 exports.getWishlist = async (req, res) => {
     try {
-      const userId = req.params.id;
+      const userId = req.params.id; 
   
       // Fetch all wishlist items for the user
       const wishlistItems = await Wishlist.find({ userId });

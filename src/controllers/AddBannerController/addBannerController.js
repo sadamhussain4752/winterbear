@@ -49,9 +49,9 @@ exports.createBannerItem = async (req, res) => {
 exports.updateBannerItem = async (req, res) => {
   try {
     const bannerItemId = req.params.id;
-    const { name, description, isActive, createdBy, lang,banner_img_mob,link_brand } = req.body;
+    const { name, description, isActive, createdBy, lang,link_brand } = req.body;
 
-    if (!name || !description || !isActive || !createdBy || !lang ) {
+    if (!name || !description || !isActive || !createdBy  ) {
       return res
         .status(400)
         .json({ success: false, error: "Missing required fields" });
@@ -66,10 +66,10 @@ exports.updateBannerItem = async (req, res) => {
         description,
         isActive,
         createdBy,
-        imageUrl: req.fileUrls[0],
+        // imageUrl: req.fileUrls[0],
         lang,
         link_brand,
-        // banner_img_mob:""
+        banner_img_mob:req.fileUrls[0]
       },
       { new: true }
     );
