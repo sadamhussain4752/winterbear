@@ -6,13 +6,24 @@ const {BASEURL} = require("../../utils/Constants")
 exports.createCategory = async (req, res) => {
   try {
     const { name, description, isActive, createdBy, lang } = req.body;
-    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
-    console.log(imagePaths);
+
+    // Ensure req.fileUrls is properly structured
+    const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
+    const categoryImgDesktop = req.fileUrls ? req.fileUrls['ImgDesktop'] : null;
+    const categoryImgMobile = req.fileUrls ? req.fileUrls['ImgMobile'] : null;
+
+    console.log('Image URLs:', req.fileUrls);
 
     const newCategory = await Category.create({
       name,
       description,
+<<<<<<< Updated upstream
       imageUrl: req.fileUrls[0],
+=======
+      imageUrl,
+      category_img_desktop: categoryImgDesktop,
+      category_img_mobile: categoryImgMobile,
+>>>>>>> Stashed changes
       isActive,
       createdBy,
       lang,
@@ -24,6 +35,7 @@ exports.createCategory = async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
 
 // Get all categories
 exports.getAllCategories = async (req, res) => {
@@ -71,16 +83,38 @@ exports.updateCategoryById = async (req, res) => {
         .json({ success: false, message: "Category not found" });
     }
 
+<<<<<<< Updated upstream
   
     
+=======
+    // Ensure req.fileUrls is properly structured
+    const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
+    const categoryImgDesktop = req.fileUrls ? req.fileUrls['ImgDesktop'] : null;
+    const categoryImgMobile = req.fileUrls ? req.fileUrls['ImgMobile'] : null;
+
+>>>>>>> Stashed changes
     // Update the category fields
     existingCategory.name = name;
     existingCategory.isActive = isActive;
     existingCategory.description = description;
+<<<<<<< Updated upstream
     // existingCategory.imageUrl = req.fileUrls[0];
   // existingCategory.category_img_desktop = req.fileUrls[0];
     // existingCategory.category_img_mobile = req.fileUrls[0];
 
+=======
+
+    // Update image URLs only if new files are uploaded
+    if (imageUrl) {
+      existingCategory.imageUrl = imageUrl;
+    }
+    if (categoryImgDesktop) {
+      existingCategory.category_img_desktop = categoryImgDesktop;
+    }
+    if (categoryImgMobile) {
+      existingCategory.category_img_mobile = categoryImgMobile;
+    }
+>>>>>>> Stashed changes
 
     existingCategory.createdBy = createdBy;
     existingCategory.lang = lang;
@@ -94,6 +128,7 @@ exports.updateCategoryById = async (req, res) => {
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
 
 // Delete a specific category by ID
 exports.deleteCategoryById = async (req, res) => {
