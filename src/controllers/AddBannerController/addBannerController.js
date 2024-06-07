@@ -24,18 +24,17 @@ exports.createBannerItem = async (req, res) => {
         .json({ success: false, error: "Missing required fields" });
     }
 
-    const imagePaths = req.files
-      ? req.files.map((file) => `${file.filename}`)
-      : null;
+    const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
+    const BannerImgMobile = req.fileUrls ? req.fileUrls['ImgMobile'] : null;
 
     const newBanner = await BannerCard.create({
       name,
       description,
-      imageUrl: req.fileUrls[0],
+      imageUrl: imageUrl,
       createdBy,
       lang,
       link_brand,
-      banner_img_mob:""
+      banner_img_mob:BannerImgMobile
     });
 
     res.status(200).json({ success: true, banner: newBanner });
@@ -48,39 +47,45 @@ exports.createBannerItem = async (req, res) => {
 // Update an item in the banner
 exports.updateBannerItem = async (req, res) => {
   try {
-    const bannerItemId = req.params.id;
-    const { name, description, isActive, createdBy, lang,link_brand } = req.body;
+    const { id: bannerItemId } = req.params;
+    const { name, description, isActive, createdBy, lang, link_brand } = req.body;
 
-    if (!name || !description || !isActive || !createdBy  ) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Missing required fields" });
+    // Validate required fields
+    if (!name || !description || !isActive || !createdBy) {
+      return res.status(400).json({ success: false, error: "Missing required fields" });
     }
-    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
 
-
-    const existingBannerItem = await BannerCard.findByIdAndUpdate(
-      bannerItemId,
-      {
-        name,
-        description,
-        isActive,
-        createdBy,
-        // imageUrl: req.fileUrls[0],
-        lang,
-        link_brand,
-        banner_img_mob:req.fileUrls[0]
-      },
-      { new: true }
-    );
+    // Check if the banner item exists
+    const existingBannerItem = await BannerCard.findById(bannerItemId);
 
     if (!existingBannerItem) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Banner item not found" });
+      return res.status(404).json({ success: false, message: "Banner item not found" });
     }
 
-    res.status(200).json({ success: true, bannerItem: existingBannerItem });
+    // Extract file URLs if present
+    const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
+    const bannerImgMobile = req.fileUrls ? req.fileUrls['ImgMobile'] : null;
+
+    // Update the banner item fields
+    existingBannerItem.name = name;
+    existingBannerItem.description = description;
+    existingBannerItem.isActive = isActive;
+    existingBannerItem.createdBy = createdBy;
+    existingBannerItem.lang = lang;
+    existingBannerItem.link_brand = link_brand;
+
+    // Update image URLs only if new files are uploaded
+    if (imageUrl) {
+      existingBannerItem.imageUrl = imageUrl;
+    }
+    if (bannerImgMobile) {
+      existingBannerItem.banner_img_mob = bannerImgMobile;
+    }
+
+    // Save the updated banner item
+    const updatedBannerItem = await existingBannerItem.save();
+
+    res.status(200).json({ success: true, bannerItem: updatedBannerItem });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });

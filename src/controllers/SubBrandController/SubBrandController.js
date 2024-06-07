@@ -6,12 +6,12 @@ exports.createSubBrand = async (req, res) => {
   try {
     const { name, description, isActive, createdBy, lang, category_id ,brand_id} = req.body;
 
-    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
-
+    const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
+   
     const newSubBrand = await SubBrand.create({
       name,
       description,
-      imageUrl: req.fileUrls[0],
+      imageUrl: imageUrl,
       isActive,
       createdBy,
       category_id,
@@ -68,6 +68,9 @@ exports.updateSubBrandById = async (req, res) => {
     // Check if the sub brand exists
     const existingSubBrand = await SubBrand.findById(subbrandId);
 
+    const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
+
+
     if (!existingSubBrand) {
       return res
         .status(404)
@@ -77,6 +80,10 @@ exports.updateSubBrandById = async (req, res) => {
     // Update the sub brand fields
     existingSubBrand.name = name;
     existingSubBrand.description = description;
+     // Update image URLs only if new files are uploaded
+     if (imageUrl) {
+      existingSubBrand.imageUrl = imageUrl;
+    }
     // existingSubBrand.imageUrl = req.fileUrls[0];
     existingSubBrand.createdBy = createdBy;
     existingSubBrand.lang = lang;

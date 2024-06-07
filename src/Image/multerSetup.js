@@ -12,11 +12,7 @@ const bucket = storage.bucket(bucketName);
 
 const multerMemoryStorage = multer.memoryStorage();
 
-<<<<<<< Updated upstream
-const localUploadArray = multer({
-=======
 const upload = multer({
->>>>>>> Stashed changes
   storage: multerMemoryStorage,
   limits: { fileSize: 17 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
@@ -29,40 +25,21 @@ const upload = multer({
       return cb(err);
     }
   },
-<<<<<<< Updated upstream
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const originalname = file.originalname;
-    const ext = path.extname(originalname);
-    const newFilename = uniqueSuffix + ext;
-    cb(null, newFilename);
-  },
-}).any('images');
-
-const uploadHandler = (req, res, next) => {
-  localUploadArray(req, res, async (err) => {
-=======
 }).fields([
-  { name: 'imageFile', maxCount: 1 },
-  { name: 'ImgDesktop', maxCount: 1 },
-  { name: 'ImgMobile', maxCount: 1 }
+  { name: 'imageFile', maxCount: 3 },
+  { name: 'ImgDesktop', maxCount: 3 },
+  { name: 'ImgMobile', maxCount: 5 }
 ]);
 
 const uploadHandler = (req, res, next) => {
   upload(req, res, async (err) => {
->>>>>>> Stashed changes
     if (err) {
       console.error('Multer error:', err);
       return res.status(400).json({ success: false, error: 'Multer error', details: err.message });
     }
-<<<<<<< Updated upstream
-    
-    const uploadPromises = req.files.map(file => new Promise((resolve, reject) => {
-=======
 
     const uploadPromises = Object.keys(req.files).map(fieldName => {
       const file = req.files[fieldName][0];
->>>>>>> Stashed changes
       console.log(`Processing file: ${file.originalname}`);
       console.log(`File size: ${file.size} bytes`);
 
@@ -71,32 +48,6 @@ const uploadHandler = (req, res, next) => {
 
       const destination = `${folderName}${newFileName}`;
 
-<<<<<<< Updated upstream
-      // Create a writable stream and upload the buffer
-      const fileStream = bucket.file(destination).createWriteStream({
-        metadata: {
-          contentType: file.mimetype,
-        },
-      });
-
-      // Handle stream events
-      fileStream.on('error', (error) => {
-        console.error('Error uploading to Google Cloud Storage:', error);
-        reject(error);
-      });
-
-      fileStream.on('finish', () => {
-        console.log('File upload complete.');
-        const publicUrl = `https://storage.googleapis.com/${bucketName}/${destination}`;
-        req.fileUrls = req.fileUrls || [];
-        req.fileUrls.push(publicUrl);
-        resolve();
-      });
-
-      // Pipe the buffer to the stream
-      fileStream.end(file.buffer);
-    }));
-=======
       return new Promise((resolve, reject) => {
         // Create a writable stream and upload the buffer
         const fileStream = bucket.file(destination).createWriteStream({
@@ -123,7 +74,6 @@ const uploadHandler = (req, res, next) => {
         fileStream.end(file.buffer);
       });
     });
->>>>>>> Stashed changes
 
     // Wait for all uploads to complete
     try {
@@ -133,10 +83,6 @@ const uploadHandler = (req, res, next) => {
     } catch (error) {
       console.error('File upload error:', error);
       res.status(500).json({ error });
-<<<<<<< Updated upstream
-      
-=======
->>>>>>> Stashed changes
     }
   });
 };
