@@ -6,6 +6,7 @@ const User = require("../../models/UserModel/User");
 const Admin = require("../../models/UserModel/Admin");
 const transporter = require("../../utils/emailConfig");
 const { v4: uuidv4 } = require("uuid");
+const axios = require('axios');
 
 const RESPONSE_MESSAGES = {
   EMAIL_TAKEN: "Email is already taken",
@@ -27,8 +28,6 @@ const isFieldTaken = async (field, value, errorMessage) => {
   }
   return null;
 };
-
-
 
 // Send reset email
 const sendResetEmail = async (userEmail, resetToken) => {
@@ -78,58 +77,136 @@ const updateAdmin = async (adminId, updateData) => {
   }
 };
 
+async function sendVerificationSMS(phoneNumber) {
+  const apiKey = "07a81cfd6463953ac8e5f3a9d43c1985";
+  const sender = "LHEROS";
+  const templateId = "1607100000000307605";
+  const verificationCode = generateVerificationCode(); // Implement your own function to generate a verification code
+
+  const smsData = {
+    key: apiKey,
+    route: 2,
+    sender: sender,
+    number: phoneNumber,
+    sms: `One time verification code for buy back is : ${verificationCode} -LOCAL HEROS`,
+    templateid: templateId
+  };
+
+  try {
+    const response = await axios.get('http://site.ping4sms.com/api/smsapi', {
+      params: smsData
+    });
+
+    // Assuming the response provides some confirmation of successful SMS delivery,
+    // you can handle it here based on the structure of the response.
+    console.log("SMS Sent Successfully:", response.data);
+
+    return verificationCode;
+  } catch (error) {
+    console.error("Error sending verification SMS:", error);
+  }
+}
+
+// Function to generate a random verification code (replace this with your own logic)
+function generateVerificationCode() {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
 module.exports = {
   login: async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, mobilenumber,google_signin,fcm_token } = req.body;
 
     try {
       // Find user by username
       const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, errors: errors.array() });
-      }
-      const user = await User.findOne({ email });
-
-      // Check if user exists
-      if (!user) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Invalid credentials" });
-      }
-      // Check if user exists
-      if (!user?.verified) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Account not Verified" });
+      if (mobilenumber) {
+        if (!errors.isEmpty()) {
+          return res
+            .status(400)
+            .json({ success: false, errors: errors.array() });
+        }
       }
 
-      // Check password
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Invalid credentials" });
+      let user;
+      if (google_signin) {
+        user = await User.findOne(
+          mobilenumber ? { mobilenumber } : { email }
+        );
+        res
+        .status(200)
+        .json({
+          success: true,
+          userId: user._id,
+          UserType: user.UserType,
+        });
+      } else {
+        user = await User.findOne(
+          mobilenumber ? { mobilenumber } : { email }
+        );
+  
+        // Check if user exists
+        if (!user) {
+          return res
+            .status(401)
+            .json({ success: false, message: "Invalid credentials" });
+        }
+        console.log(!user.verified  , user.UserType === "3");
+        // Check if user exists
+        if (!user.verified || user.OTPNumber || user.UserType === "3") {
+          // Send verification code via Twilio SMS
+          let updateOTP = await sendVerificationSMS(`${user.mobilenumber}`); // Assuming phoneNumber is a property of your User model
+          // Save the reset token and its expiration time in the user document
+          user.OTPNumber = updateOTP;
+          await user.save();
+          return res.status(401).json({
+            success: false,
+            message: "Verification SMS sent successfully",
+          });
+        }
+
+        if(user.UserType === "1" && fcm_token){
+          user.fcm_token = fcm_token;
+          // Save the updated Product
+          const updateduser = await user.save();
+        }
+  
+        // Check password
+        if (!mobilenumber) {
+          const isPasswordValid = await bcrypt.compare(password, user.password);
+          if (!isPasswordValid) {
+            return res
+              .status(401)
+              .json({ success: false, message: "Invalid credentials" });
+          }
+        }
+  
+        // Generate JWT token
+        const token = jwt.sign(
+          { email: user.email, userId: user._id, UserType: user.UserType },
+          "your-secret-key",
+          { expiresIn: "1h" }
+        );
+  
+        res
+          .status(200)
+          .json({
+            success: true,
+            token,
+            userId: user._id,
+            UserType: user.UserType,
+          });
       }
-
-      // Generate JWT token
-      const token = jwt.sign(
-        { email: user.email, userId: user._id, UserType: user.UserType },
-        "your-secret-key",
-        { expiresIn: "1h" }
-      );
-
-      res.status(200).json({ success: true, token, userId: user._id });
+      
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: "Server error" });
     }
   },
 
-  register: async (req, res) => {
+  register: async (req, res,google_signin) => {
     try {
-      let newAdmin; // Declare newAdmin variable
+      let newAdmin;
 
-      // Input validation using express-validator
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ success: false, errors: errors.array() });
@@ -148,10 +225,8 @@ module.exports = {
         lat,
         log,
         lang,
-        profile_img = ""
       } = req.body;
 
-      // Check if email, mobile, and username are already taken
       const emailTaken = await isFieldTaken(
         "email",
         email,
@@ -173,10 +248,9 @@ module.exports = {
       );
       if (usernameTaken) return res.status(400).json(usernameTaken);
 
-      // Hash the password before saving it to the database
       const hashedPassword = await bcrypt.hash(password, 10);
+      const otp = generateVerificationCode();
 
-      // Create a new user
       const newUser = await User.create({
         firstname,
         lastname,
@@ -186,10 +260,23 @@ module.exports = {
         password: hashedPassword,
         username: firstname,
         lang,
-        profile_img
+        OTPNumber: 1234, // Save the generated OTP in the user document
       });
 
-      // Handle Admin creation if UserType is 2
+      if (google_signin) {
+        const response = {
+          success: true,
+          user: newUser,
+          userId: newUser._id,
+          UserType: newUser.UserType,
+
+
+        };
+        return res
+        .status(200).json(response)
+        
+      }
+
       if (UserType === "2") {
         newAdmin = await Admin.create({
           storename,
@@ -201,16 +288,14 @@ module.exports = {
         });
       }
 
-      // Send email verification (or any other notification email)
-      // sendVerificationEmail(newUser.email);
+      // Send OTP via Twilio SMS
+      await sendVerificationSMS(`+91${mobilenumber}`, otp);
 
-      // Prepare the response object
       const response = {
         success: true,
         user: newUser,
       };
 
-      // Include newAdmin in the response if it was created
       if (newAdmin) {
         response.admin = newAdmin;
       }
@@ -223,7 +308,6 @@ module.exports = {
         .json({ success: false, error: RESPONSE_MESSAGES.SERVER_ERROR });
     }
   },
-
   listUsers: async (req, res) => {
     try {
       // Fetch all users
@@ -297,10 +381,80 @@ module.exports = {
       res.status(500).json({ success: false, error: "Server error" });
     }
   },
+  requestUser: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, errors: errors.array() });
+      }
+
+      const { mobilenumber } = req.body;
+      const user = await User.findOne({ mobilenumber });
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+
+      // Send verification code via Twilio SMS
+      const updateOTP = await sendVerificationSMS(`${user.mobilenumber}`);
+      // Save the OTP in the user document
+      user.OTPNumber = updateOTP;
+      await user.save();
+
+      return res
+        .status(200)
+        .json({ success: true, message: "Verification SMS sent successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+  },
+  verifyUser: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, errors: errors.array() });
+      }
+
+      const { email, mobilenumber, otp } = req.body;
+      const user = await User.findOne(
+        mobilenumber ? { mobilenumber } : { email }
+      );
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+
+      if (user.OTPNumber !== Number(otp)) {
+        return res.status(401).json({ success: false, message: "Invalid OTP" });
+      }
+
+      // Reset the OTP after successful verification
+      user.OTPNumber = null;
+      user.verified = true;
+      await user.save();
+
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "OTP verified successfully",
+          userId: user._id,
+          UserType: user.UserType,
+        });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, error: "Server error" });
+    }
+  },
   AdminsListDes: async (req, res) => {
     try {
       const admins = await Admin.find();
-  
+
       var adminsWithData = await Promise.all(
         admins.map(async (admin) => {
           const userData = await User.findById(admin.admin_id);
@@ -309,15 +463,13 @@ module.exports = {
           return admin;
         })
       );
-  
+
       res.status(200).json({ success: true, admins: adminsWithData });
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: "Server error" });
     }
   },
-  
-  
 
   deleteAdmin: async (req, res) => {
     try {
@@ -532,7 +684,4 @@ module.exports = {
       res.status(500).json({ success: false, error: "Server error" });
     }
   }
-  
 };
-
-
