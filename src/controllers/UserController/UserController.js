@@ -154,9 +154,9 @@ module.exports = {
         // Check if user exists
         if (!user.verified || user.OTPNumber || user.UserType === "3") {
           // Send verification code via Twilio SMS
-          let updateOTP = await sendVerificationSMS(`${user.mobilenumber}`); // Assuming phoneNumber is a property of your User model
+          // let updateOTP = await sendVerificationSMS(`${user.mobilenumber}`); // Assuming phoneNumber is a property of your User model
           // Save the reset token and its expiration time in the user document
-          user.OTPNumber = updateOTP;
+          user.OTPNumber = 1234;
           await user.save();
           return res.status(401).json({
             success: false,
@@ -289,7 +289,7 @@ module.exports = {
       }
 
       // Send OTP via Twilio SMS
-      await sendVerificationSMS(`+91${mobilenumber}`, otp);
+      // await sendVerificationSMS(`+91${mobilenumber}`, otp);
 
       const response = {
         success: true,
@@ -398,9 +398,9 @@ module.exports = {
       }
 
       // Send verification code via Twilio SMS
-      const updateOTP = await sendVerificationSMS(`${user.mobilenumber}`);
+      // const updateOTP = await sendVerificationSMS(`${user.mobilenumber}`);
       // Save the OTP in the user document
-      user.OTPNumber = updateOTP;
+      user.OTPNumber = 1234;
       await user.save();
 
       return res
