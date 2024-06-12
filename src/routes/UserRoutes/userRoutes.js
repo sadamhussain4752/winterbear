@@ -1,7 +1,6 @@
 const express = require("express");
 const UserController = require("../../controllers/UserController/UserController");
 const { body } = require("express-validator");
-const { uploadHandler } = require("../../Image/multerSetup")
 
 const router = express.Router();
 
@@ -32,6 +31,12 @@ router.post("/forgot-password", UserController.forgotPassword);
 // Get all admins endpoint
 router.get("/admins", UserController.listAdmins);
 
+// Get all admins endpoint
+router.post("/verify-otp", UserController.verifyUser);
+
+// Get all admins endpoint
+router.get("/request-otp", UserController.requestUser);
+
 router.get("/adminUser", UserController.AdminsListDes);
 
 // DELETE an admin by ID
@@ -48,6 +53,5 @@ router.put("/admins/:id", UserController.updateAdmin);
 router.put("/User/:id", UserController.updateUsers);
 
 router.put("/UserImage/:id", UserController.userImageGetById);
-
 
 module.exports = router;
