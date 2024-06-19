@@ -8,9 +8,7 @@ const transporter = require("../../utils/emailConfig");
 const { v4: uuidv4 } = require("uuid");
 const axios = require('axios');
 const fs = require('fs');
-const { google } = require('googleapis');
 const path = require('path');
-const { authenticate } = require('@google-cloud/local-auth'); // For local authentication
 const nodemailer = require('nodemailer');
 
 
