@@ -1,7 +1,7 @@
 // app.js
 const express = require("express");
 const ExcelJS = require('exceljs');
-const functions = require("firebase-functions");
+// const functions = require("firebase-functions");
 const path = require("path");
 const fs = require("fs");
 const axios = require('axios');
@@ -28,6 +28,9 @@ const WishlistRoutes = require("./routes/addwishlistRouters/WishlistRoutes")
 // const files = fs.readFileSync('./62ACF8182B9E5DCCC1E610CE4B2C525F.txt') 
 const cheerio   = require('cheerio');
 const app = express();
+
+const nodemailer = require('nodemailer');
+// const json = require('./service-account-name-accountid.json');
 
 const clientId = '1000.UJO1R63JR5AUE9NUK0V1GIJ6A7M7BR';
 const clientSecret = '91b46a114cf1db78fa5918b170523d52ab4d9167f3';
@@ -291,6 +294,43 @@ app.get('/upload-excel', async (req, res) => {
   }
 });
 
+// const sendEmail = async (email, subject, text) => {
+//   try {
+   
+//     const transporter = nodemailer.createTransport({
+//       host: "smtp.gmail.com",
+//       port: 587,
+//       auth: {
+//         user: "sadam@imsolutions.mobi",
+//         pass: "dubdhyzvluxegnke",
+//       },
+//     });
+
+//     await transporter.verify();
+    
+//     await transporter.sendMail({
+//       from: "sadamimsolutions@gmail.com",
+//     to: email,
+//     subject: "Account Verification",
+//     html: "<p>Thank you for registering! Please click the link to verify your account.</p>",
+//     });
+
+//     console.log('Email sent successfully!');
+//     return {
+//       status: 200
+//     };
+
+//   } catch (error) {
+//     console.error('Error sending email:', error);
+//     return {
+//       status: 500,
+//       error
+//     };
+//   }
+// };
+
+// sendEmail('afreen@imsolutions.mobi', 'testing 123', 'woohoo!');
+
 
 // exports.emailjs = functions.https.onRequest(app);
 
@@ -429,3 +469,200 @@ app.listen(port, () => {
 
 
 
+// const functions = require("firebase-functions");
+// const express = require("express");
+// const nodemailer = require("nodemailer");
+// const bodyParser = require("body-parser");
+// const cors = require("cors");
+// const app = express();
+
+
+
+// app.use(cors());
+// app.use(bodyParser.urlencoded());
+// app.use(express.static("public"));
+
+
+// const port = process.env.PORT || 5000;
+
+
+// // Email configuration
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.gmail.com",
+//   port: 587,
+//   auth: {
+//     user: "noreply@imsolutions.mobi",
+//     pass: "ssfnuabpmshuhlwj",
+//   },
+// });
+
+// // Function to validate email
+// function validateEmail(email) {
+//   // Using a more comprehensive regular expression for email validation
+//   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   return regex.test(email);
+// }
+
+// // Function to validate mobile number
+// function validateMobile(phone) {
+//   // Assuming phone number should contain only digits and be of a certain length
+//   const regex = /^\d{10}$/;
+//   return regex.test(phone);
+// }
+
+
+// app.post("/submit-form", async (req, res) => {
+//   const { name, email, phone, message, subject, additionalRecipients, client } = req.body;
+
+//   const subjects = `Enquiry from ${subject}`;
+
+//   // // Validate email and phone number
+//   // if (!validateEmail(email)) {
+//   //   return res.status(400).send("Invalid email address");
+//   // }
+
+//   // if (!validateMobile(phone)) {
+//   //   return res.status(400).send("Invalid phone number");
+//   // }
+
+//   const emailContent = `
+//     <p>Name: ${name}</p>
+//     <p>Email: ${email}</p>
+//     <p>Phone: ${phone}</p>
+//     <p>Message: ${message}</p>
+//     <table cellspacing="0" cellpadding="0" style="width:100%; border-bottom:1px solid #eee; font-size:12px; line-height:135%">
+//         <!-- ... (same as PHP code) ... -->
+//     </table>
+//     `;
+
+//   // Initialize default recipients
+//   let defaultRecipients = [
+//     "atul@imsolutions.mobi",
+//     "aqib@imsolutions.mobi",
+//     "info@imsolutions.mobi"
+//     // "sadamdon4752@gmail.com"
+//   ];
+
+//   // Check if additionalRecipients exists and is an array
+//   let allRecipients = Array.isArray(additionalRecipients) ? additionalRecipients : [];
+
+//   // Helper function to send email
+//   async function sendEmail(recipients, subjects, emailContent) {
+//     const mailOptions = {
+//       from: `${subjects} <noreply@ims.a2hosted.com>`,
+//       to: recipients,
+//       subject: subjects,
+//       html: emailContent,
+//     };
+
+//     return new Promise((resolve, reject) => {
+//       transporter.sendMail(mailOptions, (error, info) => {
+//         if (error) {
+//           console.error(error);
+//           reject("Internal Server Error");
+//         } else {
+//           console.log("Email sent: " + info.response);
+//           resolve("Email sent successfully");
+//         }
+//       });
+//     });
+//   }
+
+//   try {
+//     // Send email to default recipients if client is false or not provided
+//     if (!client) {
+//       await sendEmail(defaultRecipients, subjects, emailContent);
+//     }
+
+//     // Send email to additional recipients if client is true
+//     if (client) {
+//       await sendEmail(allRecipients, subjects, emailContent);
+//       await sendEmail(defaultRecipients, subjects, emailContent);
+//     }
+
+//     res.status(200).send("Email sent successfully");
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
+
+
+// function sendEmail(recipients, subjects, emailContent, res) {
+//   const mailOptions = {
+//     from: `${subjects} <noreply@ims.a2hosted.com>`,
+//     to: recipients,
+//     subject: subjects,
+//     html: emailContent,
+//   };
+
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.error(error);
+//       res.status(500).send("Internal Server Error");
+//     } else {
+//       console.log("Email sent: " + info.response);
+//       res.status(200).send("Email sent successfully");
+//     }
+//   });
+// }
+
+
+// app.post("/local-heros-submit-form", (req, res) => {
+//   const { name, email, pinCode, phone, productName, quantity ,message} = req.body;
+
+//   const subjects = pinCode !== undefined ? `Bulk Order for ${productName}` :"";
+
+//   // Validate email and phone number
+//   if (!validateEmail(email)) {
+//     return res.status(400).send("Invalid email address");
+//   }
+
+//   if (!validateMobile(phone)) {
+//     return res.status(400).send("Invalid phone number");
+//   }
+
+//   const emailContent = pinCode !== undefined ?  `
+//     <p>Name: ${name}</p>
+//     <p>Email: ${email}</p>
+//     <p>Pin Code: ${pinCode}</p>
+//     <p>Phone: ${phone}</p>
+//     <p>Product Name: ${productName}</p>
+//     <p>Quantity: ${quantity}</p>
+//     <table cellspacing="0" cellpadding="0" style="width:100%; border-bottom:1px solid #eee; font-size:12px; line-height:135%">
+//         <!-- ... (same as PHP code) ... -->
+//     </table>
+//   ` :  `
+//   <p>Name: ${name}</p>
+//   <p>Email: ${email}</p>
+//   <p>Phone: ${phone}</p>
+//   <p>Message: ${message}</p>
+//   <table cellspacing="0" cellpadding="0" style="width:100%; border-bottom:1px solid #eee; font-size:12px; line-height:135%">
+//       <!-- ... (same as PHP code) ... -->
+//   </table>
+// `;
+
+//   const mailOptions = {
+//     from: `${subjects} <noreply@ims.a2hosted.com>`,
+//     to: [
+//       "info@imsolutions.mobi",
+//       "shashi@localheros.in"
+//     ],
+//     subject: subjects,
+//     html: emailContent,
+//   };
+
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.error(error);
+//       res.status(500).send("Internal Server Error");
+//     } else {
+//       console.log("Email sent: " + info.response);
+//       res.status(200).send("Email sent successfully");
+//     }
+//   });
+// });
+
+
+// app.listen(port, () => {
+//   console.log(`Server is running on http://localhost:${port}`);
+// });

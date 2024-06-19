@@ -66,6 +66,32 @@ exports.getAddcart = async (req, res) => {
       res.status(500).json({ success: false, error: "Server error" });
     }
   };
+
+
+  // Get all add cart for a specific user
+exports.getCartItem = async (req, res) => {
+  try {
+    const {  productIds  } = req.body;
+
+    // Fetch all add cart items for the user
+    const AddCarts = productIds;
+
+    // Create an array to store promises for fetching product details
+    const productPromises = AddCarts.map(async (item) => {
+      // Fetch product details for each add cart item
+      const product = await Product.findById(item.productId);
+      return { ...item, product }; // Combine add cart item and product details
+    });
+
+    // Wait for all promises to resolve
+    const AddCartsWithProducts = await Promise.all(productPromises);
+
+    res.status(200).json({ success: true, AddCarts: AddCartsWithProducts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
   
   
   

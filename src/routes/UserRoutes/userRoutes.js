@@ -54,4 +54,8 @@ router.put("/User/:id", UserController.updateUsers);
 
 router.put("/UserImage/:id", UserController.userImageGetById);
 
+
+router.post("/verify-email-otp", UserController.verifyEmailOTP);
+
+
 module.exports = router;

@@ -2,6 +2,7 @@
 const Product = require("../../models/ProductModel/NewModelProduct");
 const { BASEURL } = require('../../utils/Constants')
 const { uploadHandlers } = require("../../Image/uploadHandlers")
+const axios = require('axios');
 
 const ExcelJS = require('exceljs');
 const fs = require('fs');
@@ -163,15 +164,12 @@ exports.getAllProducts = async (req, res) => {
 
 
 
-// Get user-specific Products by language and search criteria
 exports.getUserProducts = async (req, res) => {
   try {
     const { lang, search } = req.query;
     if (!LANGID[lang]) {
       return res.status(400).json({ success: false, error: "Invalid language code" });
     }
-
-
 
     const query = {
       lang: LANGID[lang],
@@ -184,68 +182,94 @@ exports.getUserProducts = async (req, res) => {
 
     const userProducts = await Product.find(query);
 
-    res.status(200).json({ success: true, userProducts });
+    // // Call the third-party API
+    // const data = JSON.stringify({ "new_id": "00000000-0000-0000-0000-000000000000" });
+
+    // const config = {
+    //   method: 'post',
+    //   maxBodyLength: Infinity,
+    //   url: 'https://service.alignbooks.com/ABDataService.svc/ShortList_Item',
+    //   headers: {
+    //     'username': 'hello@winterbear.in',
+    //     'apikey': '9366f0b8-1387-466b-b779-738b02d9e2d8',
+    //     'company_id': 'df196e4f-c4f3-4bbd-b91f-0b7c49a6b974',
+    //     'enterprise_id': 'a9be37ad-9cd7-4fbe-a0af-0aa0c6d9f9dc',
+    //     'user_id': '054c3890-bfce-4d34-bf00-8df095b82617',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   data: data
+    // };
+    // const apiResponse = await axios.request(config);
+    // console.log('Third-party API response:', JSON.stringify(apiResponse.data));
+
+    // const jsonDataTable = JSON.parse(apiResponse.data.JsonDataTable);
+
+    // // Loop through userProducts and jsonDataTable to check for matching SKUs
+    // const matchedProducts = userProducts.filter(product => 
+    //   jsonDataTable.some(item => item.barcode === product.sku)
+    // );
+    //  console.log(matchedProducts.length,"matchedProducts");
+    res.status(200).json({ success: true, userProducts: userProducts });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
-
 // Get a specific Product by ID
 exports.getProductByUpload = async (req, res) => {
   try {
-    const Products = await Product.find();
+    // const Products = await Product.find();
 
     try {
-    const filePath = "/home/root-mac/Documents/GitHub/winterbear-backend/Sheet1.json"; // Path to the JSON file
+    // const filePath = "/home/root-mac/Documents/GitHub/winterbear-backend/Sheet1.json"; // Path to the JSON file
 
-    // Read JSON data from the file
-    const rawData = fs.readFileSync(filePath);
-    const productsData = JSON.parse(rawData); // Parse JSON data
+    // // Read JSON data from the file
+    // const rawData = fs.readFileSync(filePath);
+    // const productsData = JSON.parse(rawData); // Parse JSON data
 
     // Map each object in the JSON array to a new object conforming to the ProductSchema
     const productsToAdd = [];
 
-    for (const product of productsData) {
-      const amount = parseFloat(product['MRP']);
-      if (isNaN(amount)) {
-        console.error(`Invalid MRP value for product: ${product['SKU Name']}`);
-        continue; // Skip this product
-      }
+    // for (const product of productsData) {
+    //   const amount = parseFloat(product['MRP']);
+    //   if (isNaN(amount)) {
+    //     console.error(`Invalid MRP value for product: ${product['SKU Name']}`);
+    //     continue; // Skip this product
+    //   }
 
-      try {
-        console.log(product['Product']);
-        // const fileUrls = await uploadHandlers(product['Product']); // Upload image for the product
+    //   try {
+    //     console.log(product['Product']);
+    //     // const fileUrls = await uploadHandlers(product['Product']); // Upload image for the product
 
-        const newProduct = {
-          name: product['Product Name '], // Map 'Product' to 'name'
-          description: product['Basic Description '],
-          amount: amount, // Use the parsed amount
-          sku: product['SKU No '], // Map 'SKU Name' to 'sku'
-          category: product['Category'], // Map 'Category' to 'category'
-          offeramount: amount + 100, // Assuming default offer amount is 0
-          color: "RED", // Example default color
-          weight: "500g", // Example default weight
-          dimensions: "10 x 10", // Example default dimensions
-          availability: "IN STOCK", // Example default availability
-          qty: "", // Assuming default quantity is empty
-          createdBy: "", // Assuming no user is specified initially
-          brand_id: "", // Assuming no brand is specified initially
-          createdAt: new Date(), // Assuming current date as creation date
-          lang: "INR", // Example language
-          images: ["https://storage.googleapis.com/email-js-1a09b.appspot.com/winterbear/1715950793452-140559355"], // Set fileUrls as images array
-          shipment: product['Shipment'],
-          catalogueShoot: product['Sub-category'], // Correcting the misspelled key
-          socialMedia: product['Brand'], // Correcting the space in the key
-          websiteInfographics: product['Website Infograpics'], // Correcting the misspelled key
-        };
+    //     const newProduct = {
+    //       name: product['Product Name '], // Map 'Product' to 'name'
+    //       description: product['Basic Description '],
+    //       amount: amount, // Use the parsed amount
+    //       sku: product['SKU No '], // Map 'SKU Name' to 'sku'
+    //       category: product['Category'], // Map 'Category' to 'category'
+    //       offeramount: amount + 100, // Assuming default offer amount is 0
+    //       color: "RED", // Example default color
+    //       weight: "500g", // Example default weight
+    //       dimensions: "10 x 10", // Example default dimensions
+    //       availability: "IN STOCK", // Example default availability
+    //       qty: "", // Assuming default quantity is empty
+    //       createdBy: "", // Assuming no user is specified initially
+    //       brand_id: "", // Assuming no brand is specified initially
+    //       createdAt: new Date(), // Assuming current date as creation date
+    //       lang: "INR", // Example language
+    //       images: ["https://storage.googleapis.com/email-js-1a09b.appspot.com/winterbear/1715950793452-140559355"], // Set fileUrls as images array
+    //       shipment: product['Shipment'],
+    //       catalogueShoot: product['Sub-category'], // Correcting the misspelled key
+    //       socialMedia: product['Brand'], // Correcting the space in the key
+    //       websiteInfographics: product['Website Infograpics'], // Correcting the misspelled key
+    //     };
 
-        productsToAdd.push(newProduct);
-      } catch (error) {
-        console.error('File upload error:', error);
-        return res.status(500).json({ success: false, error: "File upload error" });
-      }
-    }
+    //     productsToAdd.push(newProduct);
+    //   } catch (error) {
+    //     console.error('File upload error:', error);
+    //     return res.status(500).json({ success: false, error: "File upload error" });
+    //   }
+    // }
 
     // const products = await Product.updateMany(
     //   {
@@ -314,10 +338,10 @@ exports.getProductByUpload = async (req, res) => {
     
   //   // Example usage (similar to Option A)
     
-  //   // Insert products into the database
-  //   // const insertedProducts = await Product.insertMany(productsToAdd);
+    // Insert products into the database
+    // const insertedProducts = await Product.insertMany(productsToAdd);
 
-  //   return res.status(200).json({ success: true, values });
+    // return res.status(200).json({ success: true, insertedProducts });
 
   } catch (error) {
     console.error(error);

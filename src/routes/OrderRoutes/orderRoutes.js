@@ -22,4 +22,10 @@ router.get('/Dashboardlist', OrderController.getAllDashboard);
 
 router.post('/orders', OrderController.createOrderWithRazorpay);
 
+router.post('/trackStatusById', OrderController.OrderStatusById);
+
+router.post('/ChangeOrder', OrderController.ChangeOrderStatusById);
+
+router.post('/ordersCancel', OrderController.CancelOrderById);
+
 module.exports = router;
