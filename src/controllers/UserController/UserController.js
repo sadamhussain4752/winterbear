@@ -160,7 +160,7 @@ const sendEmail = async (email, otp) => {
 };
 
 module.exports = {
-  login: async (req, res) => {
+ login: async (req, res) => {
     const { email, password, mobilenumber,google_signin,fcm_token } = req.body;
 
     try {
@@ -199,15 +199,14 @@ module.exports = {
         }
         console.log(!user.verified  , user.UserType === "3");
         // Check if user exists
-        if (!user.verified || user.OTPNumber || user.UserType === "3") {
-          // Send verification code via Twilio SMS
-          // let updateOTP = await sendVerificationSMS(`${user.mobilenumber}`); // Assuming phoneNumber is a property of your User model
-          // Save the reset token and its expiration time in the user document
-          user.OTPNumber = 1234;
-          await user.save();
-          return res.status(401).json({
-            success: false,
-            message: "Verification SMS sent successfully",
+        if (user.verified && user.UserType === "3") {
+          return res
+          .status(200)
+          .json({
+            success: true,
+            token,
+            userId: user._id,
+            UserType: user.UserType,
           });
         }
 
