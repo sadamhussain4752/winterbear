@@ -202,7 +202,6 @@ module.exports = {
           .status(200)
           .json({
             success: true,
-            token,
             userId: user._id,
             UserType: user.UserType,
           });
@@ -235,7 +234,6 @@ module.exports = {
           .status(200)
           .json({
             success: true,
-            token,
             userId: user._id,
             UserType: user.UserType,
           });
