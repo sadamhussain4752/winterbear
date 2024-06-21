@@ -158,7 +158,7 @@ const sendEmail = async (email, otp) => {
 };
 
 module.exports = {
- login: async (req, res) => {
+  login: async (req, res) => {
     const { email, password, mobilenumber,google_signin,fcm_token } = req.body;
 
     try {

@@ -26,6 +26,7 @@ const upload = multer({
     }
   },
 }).fields([
+  { name: 'images', maxCount: 3 },
   { name: 'imageFile', maxCount: 3 },
   { name: 'ImgDesktop', maxCount: 3 },
   { name: 'ImgMobile', maxCount: 5 }
@@ -38,40 +39,45 @@ const uploadHandler = (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Multer error', details: err.message });
     }
 
-    const uploadPromises = Object.keys(req.files).map(fieldName => {
-      const file = req.files[fieldName][0];
-      console.log(`Processing file: ${file.originalname}`);
-      console.log(`File size: ${file.size} bytes`);
+    const uploadPromises = [];
 
-      const folderName = 'winterbear/';
-      const newFileName = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    Object.keys(req.files).forEach(fieldName => {
+      req.files[fieldName].forEach(file => {
+        console.log(`Processing file: ${file.originalname}`);
+        console.log(`File size: ${file.size} bytes`);
 
-      const destination = `${folderName}${newFileName}`;
+        const folderName = 'winterbear/';
+        const newFileName = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const destination = `${folderName}${newFileName}`;
 
-      return new Promise((resolve, reject) => {
-        // Create a writable stream and upload the buffer
-        const fileStream = bucket.file(destination).createWriteStream({
-          metadata: {
-            contentType: file.mimetype,
-          },
+        const uploadPromise = new Promise((resolve, reject) => {
+          // Create a writable stream and upload the buffer
+          const fileStream = bucket.file(destination).createWriteStream({
+            metadata: {
+              contentType: file.mimetype,
+            },
+          });
+
+          // Handle stream events
+          fileStream.on('error', (error) => {
+            console.error('Error uploading to Google Cloud Storage:', error);
+            reject(error);
+          });
+
+          fileStream.on('finish', () => {
+            console.log('File upload complete.');
+            const publicUrl = `https://storage.googleapis.com/${bucketName}/${destination}`;
+            req.fileUrls = req.fileUrls || {};
+            req.fileUrls[fieldName] = req.fileUrls[fieldName] || [];
+            req.fileUrls[fieldName].push(publicUrl);
+            resolve();
+          });
+
+          // Pipe the buffer to the stream
+          fileStream.end(file.buffer);
         });
 
-        // Handle stream events
-        fileStream.on('error', (error) => {
-          console.error('Error uploading to Google Cloud Storage:', error);
-          reject(error);
-        });
-
-        fileStream.on('finish', () => {
-          console.log('File upload complete.');
-          const publicUrl = `https://storage.googleapis.com/${bucketName}/${destination}`;
-          req.fileUrls = req.fileUrls || {};
-          req.fileUrls[fieldName] = publicUrl;
-          resolve();
-        });
-
-        // Pipe the buffer to the stream
-        fileStream.end(file.buffer);
+        uploadPromises.push(uploadPromise);
       });
     });
 

@@ -218,135 +218,183 @@ exports.getUserProducts = async (req, res) => {
 // Get a specific Product by ID
 exports.getProductByUpload = async (req, res) => {
   try {
-    // const Products = await Product.find();
+    const Products = await Product.find();
 
-    try {
-    // const filePath = "/home/root-mac/Documents/GitHub/winterbear-backend/Sheet1.json"; // Path to the JSON file
+    // const deleteResult = await Product.deleteMany({ amount: 0 });
+    // console.log(`Deleted ${deleteResult.deletedCount} products with amount 0`);
+    // const filePath = "E:/GitHub/winterbear/uploadproduct.json"; // Path to the JSON file
 
     // // Read JSON data from the file
     // const rawData = fs.readFileSync(filePath);
-    // const productsData = JSON.parse(rawData); // Parse JSON data
+    
 
-    // Map each object in the JSON array to a new object conforming to the ProductSchema
-    const productsToAdd = [];
 
-    // for (const product of productsData) {
-    //   const amount = parseFloat(product['MRP']);
-    //   if (isNaN(amount)) {
-    //     console.error(`Invalid MRP value for product: ${product['SKU Name']}`);
-    //     continue; // Skip this product
+    // console.log(productsData, "productsData");
+
+    // const updateProducts = async () => {
+    //   for (let index = 0; index < productsData.length; index++) {
+    //     const element = productsData[index];
+    //     console.log(element['sku '], "element");
+    
+    //     try {
+    //       const existingProduct = await Product.deleteMany({ amount: 0 });
+    
+    //       if (existingProduct) {
+    //         existingProduct.amount = element["MRP"];
+    //   existingProduct.name = element["Name "];
+    
+    //         const updatedProduct = await existingProduct.save();
+    //         console.log(updatedProduct, "result");
+    
+    //         console.log(`Updated product with SKU: ${updatedProduct}`);
+    //       } else {
+    //         console.log(`No products found for SKU: ${element}`);
+    //       }
+    //     } catch (error) {
+    //       console.error(`Error updating product with SKU: ${element}`, error);
+    //     }
     //   }
-
-    //   try {
-    //     console.log(product['Product']);
-    //     // const fileUrls = await uploadHandlers(product['Product']); // Upload image for the product
-
-    //     const newProduct = {
-    //       name: product['Product Name '], // Map 'Product' to 'name'
-    //       description: product['Basic Description '],
-    //       amount: amount, // Use the parsed amount
-    //       sku: product['SKU No '], // Map 'SKU Name' to 'sku'
-    //       category: product['Category'], // Map 'Category' to 'category'
-    //       offeramount: amount + 100, // Assuming default offer amount is 0
-    //       color: "RED", // Example default color
-    //       weight: "500g", // Example default weight
-    //       dimensions: "10 x 10", // Example default dimensions
-    //       availability: "IN STOCK", // Example default availability
-    //       qty: "", // Assuming default quantity is empty
-    //       createdBy: "", // Assuming no user is specified initially
-    //       brand_id: "", // Assuming no brand is specified initially
-    //       createdAt: new Date(), // Assuming current date as creation date
-    //       lang: "INR", // Example language
-    //       images: ["https://storage.googleapis.com/email-js-1a09b.appspot.com/winterbear/1715950793452-140559355"], // Set fileUrls as images array
-    //       shipment: product['Shipment'],
-    //       catalogueShoot: product['Sub-category'], // Correcting the misspelled key
-    //       socialMedia: product['Brand'], // Correcting the space in the key
-    //       websiteInfographics: product['Website Infograpics'], // Correcting the misspelled key
-    //     };
-
-    //     productsToAdd.push(newProduct);
-    //   } catch (error) {
-    //     console.error('File upload error:', error);
-    //     return res.status(500).json({ success: false, error: "File upload error" });
-    //   }
-    // }
-
-    // const products = await Product.updateMany(
-    //   {
-    //     $or: [
-    //       { images: { $exists: false } }, // lang key does not exist
-    //       { images: null },               // lang key is null
-    //       { images: "" }                  // lang key is an empty string
-    //     ]
-    //   },
-    //   {
-    //     $set: {
-    //       images: ["https://storage.googleapis.com/email-js-1a09b.appspot.com/winterbear/1715950793452-140559355"], // Set fileUrls as images array
-
-    //     },
-    //   }
-    // );
-
-
-  //   async function removeDuplicateProducts(duplicates) {
-  //     if (!duplicates.length) return; // No duplicates to remove
     
-  //     const skusToDelete = duplicates.map(duplicate => duplicate.sku); // Extract SKUs for deletion
-  //     await Product.deleteMany({ sku: { $in: skusToDelete } }); // Delete products with matching SKUs
-  //   }
-    
-  //   // Example usage:
-  //   (async () => {
-  //     const duplicateList = await checkAllDuplicateSKUs();
-    
-  //     if (duplicateList.length > 0) {
-  //       console.log("Duplicate SKUs found, removing them:");
-  //       await removeDuplicateProducts(duplicateList);
-  //       console.log("Duplicate products removed.");
-  //     } else {
-  //       console.log("No duplicate SKUs found.");
-  //     }
-  //   })();
-  // //  let values = []
-  //   async function checkAllDuplicateSKUs() {
-  //     const pipeline = [
-  //       { $group: { _id: "$sku", count: { $sum: 1 } } }, // Group by SKU and count documents
-  //       { $match: { count: { $gt: 1 } } }, // Filter for groups with count > 1 (duplicates)
-  //     ];
-    
-  //     const duplicates = await Product.aggregate(pipeline);
-  //     return duplicates.map((duplicate) => ({
-  //       sku: duplicate._id,
-  //       count: duplicate.count,
-  //     }));
-  //   }
-    
-  //   // Example usage:
-  //   (async () => {
-  //     const duplicateList = await checkAllDuplicateSKUs();
-    
-  //     if (duplicateList.length > 0) {
-  //       console.log("Duplicate SKUs found:");
-  //       duplicateList.forEach((duplicate) => {
-  //         values.push(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`)
-  //         console.log(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`);
-  //       });
-  //     } else {
-  //       console.log("No duplicate SKUs found across all products.");
-  //     }
-  //   })();
-    
-  //   // Example usage (similar to Option A)
-    
-    // Insert products into the database
-    // const insertedProducts = await Product.insertMany(productsToAdd);
+    // };
+    // updateProducts()
+    try {
+      // const filePath = "/home/root-mac/Documents/GitHub/winterbear-backend/Sheet1.json"; // Path to the JSON file
 
-    // return res.status(200).json({ success: true, insertedProducts });
+      // // Read JSON data from the file
+      // const rawData = fs.readFileSync(filePath);
+      // const productsData = JSON.parse(rawData); // Parse JSON data
 
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ success: false, error: "Server error" });
-  }
+      // Map each object in the JSON array to a new object conforming to the ProductSchema
+      const productsToAdd = [];
+
+      // for (const product of productsData) {
+      //   const amount = parseFloat(product['MRP']);
+      //   if (isNaN(amount)) {
+      //     console.error(`Invalid MRP value for product: ${product['SKU Name']}`);
+      //     continue; // Skip this product
+      //   }
+
+      //   try {
+      //     console.log(product['Product']);
+      //     // const fileUrls = await uploadHandlers(product['Product']); // Upload image for the product
+
+      //     const newProduct = {
+      //       name: product['Product Name '], // Map 'Product' to 'name'
+      //       description: product['Basic Description '],
+      //       amount: amount, // Use the parsed amount
+      //       sku: product['SKU No '], // Map 'SKU Name' to 'sku'
+      //       category: product['Category'], // Map 'Category' to 'category'
+      //       offeramount: amount + 100, // Assuming default offer amount is 0
+      //       color: "RED", // Example default color
+      //       weight: "500g", // Example default weight
+      //       dimensions: "10 x 10", // Example default dimensions
+      //       availability: "IN STOCK", // Example default availability
+      //       qty: "", // Assuming default quantity is empty
+      //       createdBy: "", // Assuming no user is specified initially
+      //       brand_id: "", // Assuming no brand is specified initially
+      //       createdAt: new Date(), // Assuming current date as creation date
+      //       lang: "INR", // Example language
+      //       images: ["https://storage.googleapis.com/email-js-1a09b.appspot.com/winterbear/1715950793452-140559355"], // Set fileUrls as images array
+      //       shipment: product['Shipment'],
+      //       catalogueShoot: product['Sub-category'], // Correcting the misspelled key
+      //       socialMedia: product['Brand'], // Correcting the space in the key
+      //       websiteInfographics: product['Website Infograpics'], // Correcting the misspelled key
+      //     };
+
+      //     productsToAdd.push(newProduct);
+      //   } catch (error) {
+      //     console.error('File upload error:', error);
+      //     return res.status(500).json({ success: false, error: "File upload error" });
+      //   }
+      // }
+
+      // const products = await Product.updateMany(
+      //   {
+      //     $or: [
+      //       { images: { $exists: false } }, // lang key does not exist
+      //       { images: null },               // lang key is null
+      //       { images: "" }                  // lang key is an empty string
+      //     ]
+      //   },
+      //   {
+      //     $set: {
+      //       images: ["https://storage.googleapis.com/email-js-1a09b.appspot.com/winterbear/1715950793452-140559355"], // Set fileUrls as images array
+
+      //     },
+      //   }
+      // );
+
+
+        async function removeDuplicateProducts(duplicates) {
+          if (!duplicates.length) return; // No duplicates to remove
+
+          const skusToDelete = duplicates.map(duplicate => duplicate.sku); // Extract SKUs for deletion
+          await Product.deleteMany({ sku: { $in: skusToDelete } }); // Delete products with matching SKUs
+        }
+
+        // Example usage:
+        (async () => {
+          const duplicateList = await checkAllDuplicateSKUs();
+
+          if (duplicateList.length > 0) {
+            console.log("Duplicate SKUs found, removing them:");
+            await removeDuplicateProducts(duplicateList);
+            console.log("Duplicate products removed.");
+          } else {
+            console.log("No duplicate SKUs found.");
+          }
+        })();
+      //  let values = []
+        async function checkAllDuplicateSKUs() {
+          const pipeline = [
+            { 
+              $match: { brand_id: "6628f33f2ab4e58448eeb108" } // Match documents with the specified brand_id
+            },
+            { 
+              $group: { 
+                _id: "$sku", 
+                count: { $sum: 1 } 
+              } // Group by SKU and count documents
+            },
+            { 
+              $match: { count: { $gt: 1 } } // Filter for groups with count > 1 (duplicates)
+            }
+          ];
+          
+
+          const duplicates = await Product.aggregate(pipeline);
+          return duplicates.map((duplicate) => ({
+            sku: duplicate._id,
+            count: duplicate.count,
+          }));
+        }
+
+        // Example usage:
+        (async () => {
+          const duplicateList = await checkAllDuplicateSKUs();
+
+          if (duplicateList.length > 0) {
+            console.log("Duplicate SKUs found:");
+            duplicateList.forEach((duplicate) => {
+              values.push(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`)
+              console.log(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`);
+            });
+          } else {
+            console.log("No duplicate SKUs found across all products.");
+          }
+        })();
+
+        // Example usage (similar to Option A)
+
+      // Insert products into the database
+      // const insertedProducts = await Product.insertMany(productsToAdd);
+
+      return res.status(200).json({ success: true });
+
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ success: false, error: "Server error" });
+    }
 
     if (!Products) {
       return res
@@ -415,7 +463,8 @@ exports.updateProductById = async (req, res) => {
         .json({ success: false, message: "Product not found" });
     }
 
-    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
+    // const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null; 
+    const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
 
     // Update the Product fields
     if (name !== undefined && name !== null) existingProduct.name = name;
@@ -423,8 +472,10 @@ exports.updateProductById = async (req, res) => {
     if (amount !== undefined && amount !== null) existingProduct.amount = amount;
     if (offeramount !== undefined && offeramount !== null) existingProduct.offeramount = offeramount;
     // Handle image update if needed
-    // existingProduct.images = req.fileUrls ;
-  if (color !== undefined && color !== null) existingProduct.color = color;
+    if(imageUrl) {
+      existingProduct.images = imageUrl ;
+    } 
+    if (color !== undefined && color !== null) existingProduct.color = color;
     if (weight !== undefined && weight !== null) existingProduct.weight = weight;
     if (dimensions !== undefined && dimensions !== null) existingProduct.dimensions = dimensions;
     if (sku !== undefined && sku !== null) existingProduct.sku = sku;
@@ -438,7 +489,7 @@ exports.updateProductById = async (req, res) => {
     if (lang !== undefined && lang !== null) existingProduct.lang = lang;
     if (!isNaN(parseFloat(qty)) && isFinite(qty)) existingProduct.qty = qty; // Check if qty is a valid number
     if (key_word !== undefined && key_word !== null) existingProduct.key_word = key_word;
-
+    // existingProduct.brand_id = null;
     // Save the updated Product
     const updatedProduct = await existingProduct.save();
 
