@@ -56,8 +56,7 @@ mongoose.connect(
 
 // Additional setup, if any
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json());
 // Use routes
 
 app.use("/api/auth", authRoutes);
