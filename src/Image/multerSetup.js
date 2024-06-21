@@ -14,7 +14,7 @@ const multerMemoryStorage = multer.memoryStorage();
 
 const upload = multer({
   storage: multerMemoryStorage,
-  limits: { fileSize: 17 * 1024 * 1024 },
+  limits: { fileSize: 25 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg') {
       cb(null, true);
@@ -26,10 +26,10 @@ const upload = multer({
     }
   },
 }).fields([
-  { name: 'images', maxCount: 3 },
-  { name: 'imageFile', maxCount: 3 },
-  { name: 'ImgDesktop', maxCount: 3 },
-  { name: 'ImgMobile', maxCount: 5 }
+  { name: 'images', maxCount: 6 },
+  { name: 'imageFile', maxCount: 6 },
+  { name: 'ImgDesktop', maxCount: 6 },
+  { name: 'ImgMobile', maxCount: 6 }
 ]);
 
 const uploadHandler = (req, res, next) => {
