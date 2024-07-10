@@ -42,7 +42,7 @@ const uploadHandler = (req, res, next) => {
     }
 
     const uploadPromises = [];
-
+   if(req.files){
     Object.keys(req.files).forEach(fieldName => {
       req.files[fieldName].forEach(file => {
         console.log(`Processing file: ${file.originalname}`);
@@ -82,6 +82,8 @@ const uploadHandler = (req, res, next) => {
         uploadPromises.push(uploadPromise);
       });
     });
+   }
+   
 
     // Wait for all uploads to complete
     try {
