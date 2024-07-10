@@ -39,7 +39,7 @@ const checkServiceability = async (pickupPostcode, deliveryPostcode, codType) =>
     url: `https://apiv2.shiprocket.in/v1/external/courier/serviceability?pickup_postcode=${pickupPostcode}&delivery_postcode=${deliveryPostcode}&weight=1&cod=${codType}`,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ2OTk5MDUsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzE5MjA2ODYzLCJqdGkiOiJSM3NqUkhSc1ViY2ZFZ3EyIiwiaWF0IjoxNzE4MzQyODYzLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcxODM0Mjg2MywiY2lkIjozMjAwNzYzLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.vyjLdX9fmND3UhrrpA-p-5ZNHZZHCMBEwDH7aBRfSdA'
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ2OTk5MDUsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzIxMzc1Mzg5LCJqdGkiOiJ0eXVZeDJ0ODhqNU9iWFBZIiwiaWF0IjoxNzIwNTExMzg5LCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyMDUxMTM4OSwiY2lkIjozMjAwNzYzLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.qXnGNAwsquTSFPtfKmr083gwCg9XRNAPcXUaqzxI6v0'
     }
   };
 
@@ -113,7 +113,7 @@ const placeOrder = async (payload) => {
     url: 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ2OTk5MDUsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzE5MjA2ODYzLCJqdGkiOiJSM3NqUkhSc1ViY2ZFZ3EyIiwiaWF0IjoxNzE4MzQyODYzLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcxODM0Mjg2MywiY2lkIjozMjAwNzYzLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.vyjLdX9fmND3UhrrpA-p-5ZNHZZHCMBEwDH7aBRfSdA'
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ2OTk5MDUsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzIxMzc1Mzg5LCJqdGkiOiJ0eXVZeDJ0ODhqNU9iWFBZIiwiaWF0IjoxNzIwNTExMzg5LCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyMDUxMTM4OSwiY2lkIjozMjAwNzYzLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.qXnGNAwsquTSFPtfKmr083gwCg9XRNAPcXUaqzxI6v0'
     },
     data: payload
   };
@@ -134,7 +134,7 @@ const onTrackOrder = async (trackId) => {
     url: `https://apiv2.shiprocket.in/v1/external/courier/track/shipment/${trackId}`,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ2OTk5MDUsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzE5MjA2ODYzLCJqdGkiOiJSM3NqUkhSc1ViY2ZFZ3EyIiwiaWF0IjoxNzE4MzQyODYzLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcxODM0Mjg2MywiY2lkIjozMjAwNzYzLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.vyjLdX9fmND3UhrrpA-p-5ZNHZZHCMBEwDH7aBRfSdA'
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ2OTk5MDUsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzIxMzc1Mzg5LCJqdGkiOiJ0eXVZeDJ0ODhqNU9iWFBZIiwiaWF0IjoxNzIwNTExMzg5LCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyMDUxMTM4OSwiY2lkIjozMjAwNzYzLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.qXnGNAwsquTSFPtfKmr083gwCg9XRNAPcXUaqzxI6v0'
     }
   };
 

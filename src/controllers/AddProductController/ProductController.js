@@ -39,7 +39,6 @@ exports.createProduct = async (req, res) => {
     } = req.body;
     console.log(req.file, req.files);
     // Assuming "images" is a file field in the form
-    const imagePaths = req.files ? req.files.map(file => `${file.filename}`) : null;
     console.log(req.fileUrls);
     const newProduct = await Product.create({
       name,
@@ -62,7 +61,7 @@ exports.createProduct = async (req, res) => {
       sub_brand_id
     });
 
-    console.log(products);
+    console.log(newProduct);
     res.status(200).json({ success: true, product: newProduct });
   } catch (error) {
     console.error(error);
@@ -489,7 +488,7 @@ exports.updateProductById = async (req, res) => {
     if (lang !== undefined && lang !== null) existingProduct.lang = lang;
     if (!isNaN(parseFloat(qty)) && isFinite(qty)) existingProduct.qty = qty; // Check if qty is a valid number
     if (key_word !== undefined && key_word !== null) existingProduct.key_word = key_word;
-    // existingProduct.brand_id = null;
+    existingProduct.category_id = null;
     // Save the updated Product
     const updatedProduct = await existingProduct.save();
 

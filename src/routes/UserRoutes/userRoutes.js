@@ -1,6 +1,7 @@
 const express = require("express");
 const UserController = require("../../controllers/UserController/UserController");
 const { body } = require("express-validator");
+const { uploadHandler } = require("../../Image/multerSetup")
 
 const router = express.Router();
 
@@ -52,7 +53,7 @@ router.put("/admins/:id", UserController.updateAdmin);
 // Update an admin by ID
 router.put("/User/:id", UserController.updateUsers);
 
-router.put("/UserImage/:id", UserController.userImageGetById);
+router.post("/UserImage/:id",uploadHandler,UserController.userImageGetById);
 
 
 router.post("/verify-email-otp", UserController.verifyEmailOTP);

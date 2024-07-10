@@ -691,7 +691,9 @@ module.exports = {
     try {
       const userId = req.params.id;
       const { profile_img,firstName,lastName } = req.body;
-  
+      const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
+      console.log(imageUrl,"imageUrl");
+
       // Check if the user with the given ID exists
       const userData = await User.findById(userId);
   
@@ -710,6 +712,11 @@ module.exports = {
        // Update the profile_img if provided
        if (lastName !== undefined && lastName !== null) {
         userData.lastname = lastName;
+      }
+
+      // Update the profile_img if provided
+      if (imageUrl !== undefined && imageUrl !== null) {
+        userData.profile_img = imageUrl;
       }
   
       // Save the updated user

@@ -29,7 +29,9 @@ const upload = multer({
   { name: 'images', maxCount: 6 },
   { name: 'imageFile', maxCount: 6 },
   { name: 'ImgDesktop', maxCount: 6 },
-  { name: 'ImgMobile', maxCount: 6 }
+  { name: 'ImgMobile', maxCount: 6 },
+  { name: 'file', maxCount: 1 }
+
 ]);
 
 const uploadHandler = (req, res, next) => {
