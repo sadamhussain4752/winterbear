@@ -266,7 +266,7 @@ module.exports = {
         lat,
         log,
         lang,
-        google_signin
+        pre
       } = req.body;
   
       const emailTaken = await isFieldTaken(
@@ -283,13 +283,7 @@ module.exports = {
       );
       if (mobileTaken) return res.status(400).json(mobileTaken);
   
-      const usernameTaken = await isFieldTaken(
-        "firstname",
-        firstname,
-        RESPONSE_MESSAGES.USERNAME_TAKEN
-      );
-      if (usernameTaken) return res.status(400).json(usernameTaken);
-  
+     
       const hashedPassword = await bcrypt.hash(password, 10);
       const otp = generateVerificationCode();
       const otpExpiry = Date.now() + 3600000; // OTP expires in 1 hour
@@ -306,29 +300,12 @@ module.exports = {
         OTPNumber: otp,
         OTPExpiry: otpExpiry,
         verified: true,
+        pre
       });
   
-      if (google_signin) {
-        const response = {
-          success: true,
-          user: newUser,
-          userId: newUser._id,
-          UserType: newUser.UserType,
-        };
-        return res.status(200).json(response);
-      }
+    
   
-      if (UserType === "2") {
-        newAdmin = await Admin.create({
-          storename,
-          storeaddress,
-          admin_id: newUser._id,
-          storetimming,
-          lat,
-          log,
-        });
-      }
-  
+     
       await sendEmail(email, otp);
   
       const response = {
@@ -336,9 +313,7 @@ module.exports = {
         user: newUser,
       };
   
-      if (newAdmin) {
-        response.admin = newAdmin;
-      }
+     
      
       
       res.status(200).json(response);
