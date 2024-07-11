@@ -488,7 +488,6 @@ exports.updateProductById = async (req, res) => {
     if (lang !== undefined && lang !== null) existingProduct.lang = lang;
     if (!isNaN(parseFloat(qty)) && isFinite(qty)) existingProduct.qty = qty; // Check if qty is a valid number
     if (key_word !== undefined && key_word !== null) existingProduct.key_word = key_word;
-    existingProduct.category_id = null;
     // Save the updated Product
     const updatedProduct = await existingProduct.save();
 

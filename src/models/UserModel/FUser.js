@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   lang: { type: String, unique: false },
   profile_img: {type: String},
   OTPNumber: { type: Number },
+  pre: { type: Number },
   loyalty_point: {type: Number, default: 0}, // Changed type to Number
   verified: {
     type: Boolean,
