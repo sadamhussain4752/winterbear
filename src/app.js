@@ -23,6 +23,7 @@ const FaddcartRoutes = require("./routes/AddCartRoutes/addCartRoutes");
 const orderRoutes = require("./routes/OrderRoutes/orderRoutes");
 const ForderRoutes = require("./routes/FOrderRoutes/ForderRouter");
 const BannerRoutes = require("./routes/BannerRouters/BannerRoutes");
+const FBannerRoutes = require("./routes/AddBannerRoutes/FBannerRoutes");
 const EmployeeRoutes = require("./routes/AddEmployess/addEmployeesRoutes")
 const FAQRoutes = require("./routes/AddFaqRoutes/faqRoutes")
 const RatingRoute = require("./routes/AddRatingRoutes/RatingRoutes")
@@ -73,6 +74,7 @@ app.use("/api/franch-addcart", FaddcartRoutes);
 app.use("/api/wishlist", WishlistRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/franch-order", ForderRoutes);
+app.use("/api/franch-header", FBannerRoutes);
 app.use("/api/header", BannerRoutes);
 app.use("/api/staff", EmployeeRoutes);
 app.use("/api/faq", FAQRoutes);
