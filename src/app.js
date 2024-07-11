@@ -10,14 +10,18 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const UserController = require("./routes/UserRoutes/userRoutes");
+const FUserController = require("./routes/FUserRoutes/FuserRoutes");
 const categoryRoutes = require("./routes/categoryRoutes/categoryRoutes");
 const brandRoutes = require("./routes/BrandRoutes/brandRoutes");
 const SubBrandRoutes = require("./routes/SubBrandRoutes/subBrandRoutes")
 const productRoutes = require("./routes/ProductRoutes/productRoutes");
+const FproductRoutes = require("./routes/FProductRoutes/FproductRoutes");
 const couponRoutes = require("./routes/couponRoutes/CouponRouter");
 const addressRoutes = require("./routes/AddressRoutes/addressRoutes");
 const addcartRoutes = require("./routes/AddCartRoutes/addCartRoutes");
+const FaddcartRoutes = require("./routes/AddCartRoutes/addCartRoutes");
 const orderRoutes = require("./routes/OrderRoutes/orderRoutes");
+const ForderRoutes = require("./routes/FOrderRoutes/ForderRouter");
 const BannerRoutes = require("./routes/BannerRouters/BannerRoutes");
 const EmployeeRoutes = require("./routes/AddEmployess/addEmployeesRoutes")
 const FAQRoutes = require("./routes/AddFaqRoutes/faqRoutes")
@@ -47,12 +51,7 @@ app.use(express.static(path.join(__dirname, "./../uploads")));
 const port = process.env.PORT || 5000;
 
 mongoose.connect(
-  "mongodb+srv://sadamdon1234:1YktFZRZ1cX0PRj4@cluster0.nhacelr.mongodb.net/?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+  "mongodb+srv://sadamdon1234:1YktFZRZ1cX0PRj4@cluster0.nhacelr.mongodb.net/?retryWrites=true&w=majority");
 
 // Additional setup, if any
 
@@ -61,15 +60,19 @@ app.use(bodyParser.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", UserController);
+app.use("/api/franch-user", FUserController);
 app.use("/api/category", categoryRoutes);
 app.use("/api/brand", brandRoutes);
 app.use("/api/sub-brand", SubBrandRoutes);
 app.use("/api/product", productRoutes);
+app.use("/api/franch-product", FproductRoutes);
 app.use("/api/coupon", couponRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/addcart", addcartRoutes);
+app.use("/api/franch-addcart", FaddcartRoutes);
 app.use("/api/wishlist", WishlistRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/franch-order", ForderRoutes);
 app.use("/api/header", BannerRoutes);
 app.use("/api/staff", EmployeeRoutes);
 app.use("/api/faq", FAQRoutes);
