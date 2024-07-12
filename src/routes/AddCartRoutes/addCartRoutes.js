@@ -1,7 +1,7 @@
 // routes/AddCartRoutes.js
 const express = require('express');
 const router = express.Router();
-const AddCartController = require('../../controllers/AddFCardController/addFCartController');
+const AddCartController = require('../../controllers/AddCartController/addCartController');
 
 // Create a new item in the cart
 router.post('/createCartItem', AddCartController.createCartItem);
