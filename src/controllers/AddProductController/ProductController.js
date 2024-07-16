@@ -81,7 +81,7 @@ exports.getAllProducts = async (req, res) => {
   try {
     // Implement pagination and limit the number of records returned
     const pageNumber = parseInt(req.query.page) || 1; // Default page number is 1
-    const pageSize = parseInt(req.query.limit) || 2000; // Default page size is 10
+    const pageSize = parseInt(req.query.limit) || 4000; // Default page size is 10
 
     const skip = (pageNumber - 1) * pageSize;
 

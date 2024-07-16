@@ -1,5 +1,7 @@
 // controllers/Product.js
 const Product = require("../../models/ProductModel/FProduct");
+const ProductC = require("../../models/ProductModel/NewModelProduct");
+
 const { BASEURL } = require('../../utils/Constants')
 const { uploadHandlers } = require("../../Image/uploadHandlers")
 const axios = require('axios');
@@ -81,7 +83,7 @@ exports.getAllProducts = async (req, res) => {
   try {
     // Implement pagination and limit the number of records returned
     const pageNumber = parseInt(req.query.page) || 1; // Default page number is 1
-    const pageSize = parseInt(req.query.limit) || 2000; // Default page size is 10
+    const pageSize = parseInt(req.query.limit) || 4000; // Default page size is 10
 
     const skip = (pageNumber - 1) * pageSize;
 
@@ -179,7 +181,22 @@ exports.getUserProducts = async (req, res) => {
       ],
     };
 
-    const userProducts = await Product.find(query);
+
+    const userProduct = await Product.find();
+    // let productsToAdd = [];
+
+    // for (let index = 0; index < userProduct.length; index++) {
+    //   const element = userProduct[index];
+    //   delete element._id;
+    //   if(element.images.length > 0){
+    //     productsToAdd.push(element);
+
+    //   }
+
+    //   console.log(element,"element");
+      
+    // }
+
 
     // // Call the third-party API
     // const data = JSON.stringify({ "new_id": "00000000-0000-0000-0000-000000000000" });
@@ -208,7 +225,9 @@ exports.getUserProducts = async (req, res) => {
     //   jsonDataTable.some(item => item.barcode === product.sku)
     // );
     //  console.log(matchedProducts.length,"matchedProducts");
-    res.status(200).json({ success: true, userProducts: userProducts });
+    const insertedProducts = await ProductC.insertMany(productsToAdd);
+
+    res.status(200).json({ success: true, userProducts: insertedProducts });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
@@ -420,6 +439,7 @@ exports.getProductById = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Products not found" });
     }
+
 
     res.status(200).json({ success: true, Products });
   } catch (error) {

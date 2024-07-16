@@ -19,7 +19,7 @@ const FproductRoutes = require("./routes/FProductRoutes/FproductRoutes");
 const couponRoutes = require("./routes/couponRoutes/CouponRouter");
 const addressRoutes = require("./routes/AddressRoutes/addressRoutes");
 const addcartRoutes = require("./routes/AddCartRoutes/addCartRoutes");
-const FaddcartRoutes = require("./routes/AddCartRoutes/addCartRoutes");
+const FaddcartRoutes = require("./routes/AddFCardRoutes/addFCardRoutes");
 const orderRoutes = require("./routes/OrderRoutes/orderRoutes");
 const ForderRoutes = require("./routes/FOrderRoutes/ForderRouter");
 const BannerRoutes = require("./routes/BannerRouters/BannerRoutes");
@@ -30,6 +30,8 @@ const RatingRoute = require("./routes/AddRatingRoutes/RatingRoutes")
 const EventRoute = require("./routes/AddEventRoutes/EventRoutes")
 const BlogRoutes = require("./routes/AddBlogsRoutes/BlogRoutes")
 const WishlistRoutes = require("./routes/addwishlistRouters/WishlistRoutes")
+const FWishlistRoutes = require("./routes/FAddWishlistRoutes/FWishlistRoutes")
+
 // const files = fs.readFileSync('./62ACF8182B9E5DCCC1E610CE4B2C525F.txt') 
 const cheerio   = require('cheerio');
 const app = express();
@@ -72,6 +74,7 @@ app.use("/api/address", addressRoutes);
 app.use("/api/addcart", addcartRoutes);
 app.use("/api/franch-addcart", FaddcartRoutes);
 app.use("/api/wishlist", WishlistRoutes);
+app.use("/api/franch-wishlist", FWishlistRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/franch-order", ForderRoutes);
 app.use("/api/franch-header", FBannerRoutes);

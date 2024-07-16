@@ -1,6 +1,10 @@
-// models/User.js
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+
+const categoryPercentageSchema = new mongoose.Schema({
+  categoryId: { type: String },
+  percentage: { type: Number, },
+});
 
 const userSchema = new mongoose.Schema({
   firstname: { type: String, required: true },
@@ -11,15 +15,16 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   username: { type: String },
   lang: { type: String, unique: false },
-  profile_img: {type: String},
+  profile_img: { type: String },
   OTPNumber: { type: Number },
   pre: { type: Number },
-  loyalty_point: {type: Number, default: 0}, // Changed type to Number
+  loyalty_point: { type: Number, default: 0 },
   verified: {
     type: Boolean,
     required: true,
     default: true,
   },
+  categoryPercentage: [categoryPercentageSchema], // Array of objects with specific schema
 });
 
 // Add a method to generate a verification token
