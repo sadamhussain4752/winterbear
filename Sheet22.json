@@ -1,6 +1,7 @@
 {
   "success": true,
-  "products": [
+  "products": 
+  [
       {
           "_id": "661115dc6f1778dba9db791b",
           "name": "Stationary",

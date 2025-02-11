@@ -37,15 +37,16 @@ exports.createProduct = async (req, res) => {
       qty,
       sub_brand_id
     } = req.body;
-    console.log(req.file, req.files);
+    console.log(req.file, req.files,req.fileUrls);
     // Assuming "images" is a file field in the form
-    console.log(req.fileUrls);
+    const imageUrl = req.fileUrls ? req.fileUrls['imageFile'] : null;
+
     const newProduct = await Product.create({
       name,
       description,
       amount,
       offeramount,
-      images: req.fileUrls[0], // Storing images as base64-encoded string, adjust as needed
+      images: imageUrl, // Storing images as base64-encoded string, adjust as needed
       color,
       weight,
       dimensions,
@@ -181,6 +182,8 @@ exports.getUserProducts = async (req, res) => {
 
     const userProducts = await Product.find(query);
 
+    
+
     // // Call the third-party API
     // const data = JSON.stringify({ "new_id": "00000000-0000-0000-0000-000000000000" });
 
@@ -217,7 +220,7 @@ exports.getUserProducts = async (req, res) => {
 // Get a specific Product by ID
 exports.getProductByUpload = async (req, res) => {
   try {
-    const Products = await Product.find();
+    // const Products = await Product.find();
 
     // const deleteResult = await Product.deleteMany({ amount: 0 });
     // console.log(`Deleted ${deleteResult.deletedCount} products with amount 0`);
@@ -257,11 +260,11 @@ exports.getProductByUpload = async (req, res) => {
     // };
     // updateProducts()
     try {
-      // const filePath = "/home/root-mac/Documents/GitHub/winterbear-backend/Sheet1.json"; // Path to the JSON file
+      const filePath = "/Users/admin/Documents/GitHub/winterbear/Liveproduct.json"; // Path to the JSON file
 
       // // Read JSON data from the file
-      // const rawData = fs.readFileSync(filePath);
-      // const productsData = JSON.parse(rawData); // Parse JSON data
+      const rawData = fs.readFileSync(filePath);
+      const productsData = JSON.parse(rawData); // Parse JSON data
 
       // Map each object in the JSON array to a new object conforming to the ProductSchema
       const productsToAdd = [];
@@ -324,84 +327,95 @@ exports.getProductByUpload = async (req, res) => {
       // );
 
 
-        async function removeDuplicateProducts(duplicates) {
-          if (!duplicates.length) return; // No duplicates to remove
+        // async function removeDuplicateProducts(duplicates) {
+        //   if (!duplicates.length) return; // No duplicates to remove
 
-          const skusToDelete = duplicates.map(duplicate => duplicate.sku); // Extract SKUs for deletion
-          await Product.deleteMany({ sku: { $in: skusToDelete } }); // Delete products with matching SKUs
-        }
+        //   const skusToDelete = duplicates.map(duplicate => duplicate.sku); // Extract SKUs for deletion
+        //   await Product.deleteMany({ sku: { $in: skusToDelete } }); // Delete products with matching SKUs
+        // }
 
-        // Example usage:
-        (async () => {
-          const duplicateList = await checkAllDuplicateSKUs();
+        // (async () => {
+        //   const duplicateList = await checkAllDuplicateSKUs();
 
-          if (duplicateList.length > 0) {
-            console.log("Duplicate SKUs found, removing them:");
-            await removeDuplicateProducts(duplicateList);
-            console.log("Duplicate products removed.");
-          } else {
-            console.log("No duplicate SKUs found.");
-          }
-        })();
-      //  let values = []
-        async function checkAllDuplicateSKUs() {
-          const pipeline = [
-            { 
-              $match: { brand_id: "6628f33f2ab4e58448eeb108" } // Match documents with the specified brand_id
-            },
-            { 
-              $group: { 
-                _id: "$sku", 
-                count: { $sum: 1 } 
-              } // Group by SKU and count documents
-            },
-            { 
-              $match: { count: { $gt: 1 } } // Filter for groups with count > 1 (duplicates)
-            }
-          ];
+        //   if (duplicateList.length > 0) {
+        //     console.log("Duplicate SKUs found, removing them:");
+        //     await removeDuplicateProducts(duplicateList);
+        //     console.log("Duplicate products removed.");
+        //   } else {
+        //     console.log("No duplicate SKUs found.");
+        //   }
+        // })();
+        // async function checkAllDuplicateSKUs() {
+        //   const pipeline = [
+        //     { 
+        //       $match: { brand_id: "6628f33f2ab4e58448eeb108" } // Match documents with the specified brand_id
+        //     },
+        //     { 
+        //       $group: { 
+        //         _id: "$sku", 
+        //         count: { $sum: 1 } 
+        //       } // Group by SKU and count documents
+        //     },
+        //     { 
+        //       $match: { count: { $gt: 1 } } // Filter for groups with count > 1 (duplicates)
+        //     }
+        //   ];
           
 
-          const duplicates = await Product.aggregate(pipeline);
-          return duplicates.map((duplicate) => ({
-            sku: duplicate._id,
-            count: duplicate.count,
-          }));
-        }
+        //   const duplicates = await Product.aggregate(pipeline);
+        //   return duplicates.map((duplicate) => ({
+        //     sku: duplicate._id,
+        //     count: duplicate.count,
+        //   }));
+        // }
 
-        // Example usage:
-        (async () => {
-          const duplicateList = await checkAllDuplicateSKUs();
+        // (async () => {
+        //   const duplicateList = await checkAllDuplicateSKUs();
 
-          if (duplicateList.length > 0) {
-            console.log("Duplicate SKUs found:");
-            duplicateList.forEach((duplicate) => {
-              values.push(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`)
-              console.log(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`);
-            });
-          } else {
-            console.log("No duplicate SKUs found across all products.");
-          }
-        })();
+        //   if (duplicateList.length > 0) {
+        //     console.log("Duplicate SKUs found:");
+        //     duplicateList.forEach((duplicate) => {
+        //       values.push(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`)
+        //       console.log(`  SKU: ${duplicate.sku}, Count: ${duplicate.count}`);
+        //     });
+        //   } else {
+        //     console.log("No duplicate SKUs found across all products.");
+        //   }
+        // })();
 
         // Example usage (similar to Option A)
 
       // Insert products into the database
       // const insertedProducts = await Product.insertMany(productsToAdd);
 
-      return res.status(200).json({ success: true });
+
+
+    for (let index = 0; index < productsData.length; index++) {
+      const element = productsData[index];
+      delete element._id;
+      delete element.__v;
+
+      if(element.images.length > 0){
+        productsToAdd.push(element);
+
+      }
+      
+    }
+
+    console.log('====================================');
+    console.log(productsToAdd);
+    console.log('====================================');
+
+    //  const insertedProducts = await Product.insertMany(productsToAdd);
+      return res.status(200).json({ success: true ,productsToAdd});
 
     } catch (error) {
       console.error(error);
       return res.status(500).json({ success: false, error: "Server error" });
     }
 
-    if (!Products) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Products not found" });
-    }
+   
 
-    res.status(200).json({ success: true, Products });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
@@ -456,7 +470,7 @@ exports.updateProductById = async (req, res) => {
     // Check if the Product exists
     const existingProduct = await Product.findById(ProductId);
 
-    if (!existingProduct) {
+    if (!existingProduct) { 
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
