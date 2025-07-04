@@ -25,6 +25,23 @@ const products = await Product.updateMany(
       }
     );
 
+     try {
+    const brandId = "6628f33f2ab4e58448eeb108";
+
+    const result = await Product.updateMany(
+      { brand_id: brandId },
+      { $set: { isActive: true } }
+    );
+
+    console.log(`Matched ${result.matchedCount || result.n} products`);
+    console.log(`Modified ${result.modifiedCount || result.nModified} products`);
+
+    process.exit();
+  } catch (error) {
+    console.error("Error updating products:", error);
+    process.exit(1);
+  }
+
 
 
 server {

@@ -78,85 +78,24 @@ exports.getAllProducts = async (req, res) => {
     return res.status(400).json({ success: false, error: "Invalid 'lang' parameter" });
   }
 
-
   try {
-    // Implement pagination and limit the number of records returned
-    const pageNumber = parseInt(req.query.page) || 1; // Default page number is 1
-    const pageSize = parseInt(req.query.limit) || 4000; // Default page size is 10
+    const pageNumber = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.limit) || 4000;
 
     const skip = (pageNumber - 1) * pageSize;
 
-    const products = await Product.find({}) // Select only necessary fields
+    const products = await Product.find({ isActive: true }) // Filter only active products
       .skip(skip)
       .limit(pageSize)
-      .lean(); // Convert documents to plain JavaScript objects for better performance
+      .lean();
 
     res.status(200).json({ success: true, products });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Server error" });
   }
-
-  // try {
-  //   const filePath = "/home/root-mac/Documents/GitHub/winterbear-backend/Sheet1.json"; // Path to the JSON file
-
-  //   // Read JSON data from the file
-  //   const rawData = fs.readFileSync(filePath);
-  //   const productsData = JSON.parse(rawData); // Parse JSON data
-
-  //   // Map each object in the JSON array to a new object conforming to the ProductSchema
-  //   const productsToAdd = [];
-
-  //   for (const product of productsData) {
-  //     const amount = parseFloat(product['MRP'].replace('₹', ''));
-  //     if (isNaN(amount)) {
-  //       console.error(`Invalid MRP value for product: ${product['SKU Name']}`);
-  //       continue; // Skip this product
-  //     }
-
-  //     try {
-  //       const fileUrls = await uploadHandlers(product['Product']); // Upload image for the product
-
-  //       const newProduct = {
-  //         name: product['Category'], // Map 'Product' to 'name'
-  //         description: product['SKU Name'],
-  //         amount: amount, // Use the parsed amount
-  //         sku: product['SKU Name'], // Map 'SKU Name' to 'sku'
-  //         category: product['Category'], // Map 'Category' to 'category'
-  //         offeramount: 0, // Assuming default offer amount is 0
-  //         color: "RED", // Example default color
-  //         weight: "500g", // Example default weight
-  //         dimensions: "10 x 10", // Example default dimensions
-  //         availability: "IN STOCK", // Example default availability
-  //         qty: "", // Assuming default quantity is empty
-  //         createdBy: "", // Assuming no user is specified initially
-  //         brand_id: "", // Assuming no brand is specified initially
-  //         createdAt: new Date(), // Assuming current date as creation date
-  //         lang: "INR", // Example language
-  //         images: fileUrls, // Set fileUrls as images array
-  //         shipment: product['Shipment'],
-  //         catalogueShoot: product['Catalouge Shoot'], // Correcting the misspelled key
-  //         socialMedia: product['Social Media'], // Correcting the space in the key
-  //         websiteInfographics: product['Website Infograpics'], // Correcting the misspelled key
-  //       };
-
-  //       productsToAdd.push(newProduct);
-  //     } catch (error) {
-  //       console.error('File upload error:', error);
-  //       return res.status(500).json({ success: false, error: "File upload error" });
-  //     }
-  //   }
-
-  //   // Insert products into the database
-  //   const insertedProducts = await Product.insertMany(productsToAdd);
-
-  //   return res.status(200).json({ success: true, insertedProducts });
-
-  // } catch (error) {
-  //   console.error(error);
-  //   return res.status(500).json({ success: false, error: "Server error" });
-  // }
 };
+
 
 
 

@@ -56,7 +56,7 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 
 mongoose.connect(
   "mongodb+srv://sadamdon1234:1YktFZRZ1cX0PRj4@cluster0.nhacelr.mongodb.net/?retryWrites=true&w=majority");

@@ -177,12 +177,9 @@ exports.getAllBannerbyproduct = async (req, res) => {
     // Fetch brands based on the 'lang' parameter
     const Brands = await Brand.find({ lang: LANGID[lang] });
 
-
     // Fetch products and subbrands for each brand asynchronously using Promise.all
     const productsPromises = Brands.map(async (brand) => {
       console.log(`Fetching products for brand_id: ${brand._id}`);
-
-
 
       // Fetch subbrands for the current brand
       const subbrand = await SubBrands.find({
@@ -190,26 +187,26 @@ exports.getAllBannerbyproduct = async (req, res) => {
         brand_id: brand._id,
       });
 
-      // Fetch products for the current brand
+      // Fetch only active products for the current brand
       const products = await Product.find({
         brand_id: brand._id,
+        isActive: true, // 🔍 Only fetch active products
       });
 
-      // Log the products found (for debugging)
-      console.log(`Products found for brand_id ${brand._id}:`, products);
+      console.log(`Active products found for brand_id ${brand._id}:`, products);
 
       return { brand, products, subbrand };
     });
 
     const productList = await Promise.all(productsPromises);
 
-    // Return the product list as a JSON response
     res.status(200).json({ success: true, productList });
   } catch (error) {
     console.error('Error in getAllBannerbyproduct:', error);
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
 
 
 
